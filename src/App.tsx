@@ -15,7 +15,7 @@ function App() {
             <Nav className="container-fluid">
               <Nav.Item>
                 <Link className = "nav-link" to = "/login">
-                  Login
+                  Log in
                 </Link>
               </Nav.Item>
             </Nav>
