@@ -42,6 +42,7 @@
     padding-top: 0.5rem;
     width: 100% !important;
     justify-content: end;
+    border-radius: 12px;
 }
 .categories_wrapper:after{
     display: none;
@@ -49,8 +50,10 @@
 }
 .categories_wrapper:hover{
     color: white;
-    background-color: royalblue;
+    background-color:dimgray;
     cursor: pointer;
+    border-style: hidden;
+    border-color:lightslategrey;
 }
 .categories_wrapper:hover:after{
     display: block;
