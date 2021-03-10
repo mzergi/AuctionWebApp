@@ -81,7 +81,7 @@ export default function LoginPage() {
               <Form.Label>E-mail </Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter the e-mail you want to register with."
+                placeholder="Enter the e-mail you want to register with"
               />
             </Form.Group>
             <Form.Group controlId="signupPassword">
@@ -92,7 +92,7 @@ export default function LoginPage() {
               <Form.Label>Confirm password</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Type in the password you entered above"
+                placeholder="Enter the password you gave above"
               />
             </Form.Group>
             <Form.Group>
@@ -100,7 +100,7 @@ export default function LoginPage() {
               <Form.Control type="text" placeholder="Enter your name" />
             </Form.Group>
             <Form.Group controlId="birth">
-              <Form.Label>Born in:</Form.Label>
+              <Form.Label>Birth</Form.Label>
               <Form.Control type="date" />
             </Form.Group>
           </Form>

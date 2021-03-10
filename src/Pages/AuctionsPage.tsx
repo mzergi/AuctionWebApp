@@ -5,8 +5,12 @@ import Sidebar from "../Components/Sidebar";
 import "../styles/auctionspage_styles.css";
 import "../Mock/FeaturedAuctionsMock";
 import FeaturedAuctionsMock from '../Mock/FeaturedAuctionsMock';
+import {AuctionItem} from "../Model/auction_types";
 
-export default function AuctionsPage() {
+interface AuctionsPageProps {
+    DetailsHandler: (item: AuctionItem) => void
+}
+export default function AuctionsPage(Props: AuctionsPageProps) {
     return (
         <Container fluid>
             <Row>
@@ -21,7 +25,7 @@ export default function AuctionsPage() {
                     </Row>
                     <Row>
                         <Col className="d-flex">
-                            <FeaturedAuctionsMock/>
+                            <FeaturedAuctionsMock DetailsHandler = {Props.DetailsHandler}/>
                         </Col>
                     </Row>
 
