@@ -1,0 +1,58 @@
+/*sidebar from https://stackoverflow.com/questions/60482018/make-a-sidebar-from-react-bootstrap */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    min-height: 100vh !important;
+    z-index: 100;
+    padding: 0 0 0;
+}
+
+#sidebar-wrapper{
+    min-height: 100vh !important;
+    width: 100vw;
+    margin-left: 0;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+    background-color: rgba(112,128,144, 0.2)
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem   0.5rem;
+    font-size: 1.2rem;
+}
+
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+}
+
+.categories_item{
+    flex-grow: 1;
+}
+
+.categories_wrapper{
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    width: 100% !important;
+    justify-content: end;
+}
+.categories_wrapper:after{
+    display: none;
+    content: ">";
+}
+.categories_wrapper:hover{
+    color: white;
+    background-color: royalblue;
+    cursor: pointer;
+}
+.categories_wrapper:hover:after{
+    display: block;
+}
+

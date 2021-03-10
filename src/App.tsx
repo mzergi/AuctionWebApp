@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import './App.css';
 import LoginPage from "./Pages/LoginPage";
+import AuctionsPage from "./Pages/AuctionsPage";
 
 function App() {
   return (
@@ -12,10 +13,15 @@ function App() {
           bg = "dark"
           variant = "dark"
           >
-            <Nav className="container-fluid">
+            <Nav>
               <Nav.Item>
                 <Link className = "nav-link" to = "/login">
                   Log in
+                </Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Link className = "nav-link" to = "/auctions">
+                  Browse
                 </Link>
               </Nav.Item>
             </Nav>
@@ -26,6 +32,9 @@ function App() {
             </Route>
             <Route exact path="/">
               <Redirect to="/login"/>
+            </Route>
+            <Route exact path="/auctions">
+              <AuctionsPage />
             </Route>
           </Switch>
       </Router>
