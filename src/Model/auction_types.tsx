@@ -21,3 +21,8 @@ export type Product = {
     name: string,
 
 }
+export type Category = {
+    id: number,
+    name: number,
+    parentCategory: Category
+}
