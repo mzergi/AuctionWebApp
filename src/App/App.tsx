@@ -3,15 +3,15 @@ import { BrowserRouter as Router, Switch, Redirect, Route, Link } from "react-ro
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import './App.css';
-import LoginPage from "./Pages/LoginPage";
-import AuctionsPage from "./Pages/AuctionsPage";
-import ItemDisplayPage from "./Pages/ItemDisplayPage";
-import {AuctionItem, Product, User, Bid} from "./Model/auction_types";
+import LoginPage from "../Pages/LoginPage";
+import AuctionsPage from "../Pages/AuctionsPage";
+import ItemDisplayPage from "../Pages/ItemDisplayPage";
+import {AuctionItem, Product, User, Bid} from "../Model/auction_types";
+import { useAppSelector, useAppDispatch } from './hooks';
 
 function App() {
-  var starteruser: User = {id: 0, wallet: 0, email: "", bids: []}
-  var starterproduct: AuctionItem = {id: 0, name: "", top_bidder: starteruser, product: {id: 0, name: ""}, highest_bid: 0, description: "" }
-  const [displayedProduct, SetDisplayedProduct] = useState(starterproduct);
+  const displayedItem = useAppSelector(state => state.details.auctionitem);
+  useAppDispatch();
   return (
       <Router>
         <Navbar
@@ -39,10 +39,10 @@ function App() {
               <Redirect to="/login"/>
             </Route>
             <Route exact path="/auctions">
-              <AuctionsPage DetailsHandler = {SetDisplayedProduct}/>
+              <AuctionsPage/>
             </Route>
-            <Route exact path={"/auctions/".concat(displayedProduct.id.toString())}>
-              <ItemDisplayPage auction = {displayedProduct}/>
+            <Route exact path={"/auctions/".concat(displayedItem.id.toString())}>
+              <ItemDisplayPage auction = {displayedItem}/>
             </Route>
           </Switch>
       </Router>

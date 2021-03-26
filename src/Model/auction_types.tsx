@@ -1,28 +1,39 @@
 export type AuctionItem = {
     id: number,
-    top_bidder: User,
+    topBidder: User,
     name: string,
     product: Product,
-    highest_bid: number,
-    description: string
+    topBid: Bid,
+    description: string,
+    startOfAuction: Date,
+    endOfAuction: Date,
+    bids: Bid[],
+    startingPrice: number
 }
+
 export type User = {
     id: number,
-    wallet: number,
+    password: string,
     email: string,
-    bids: Bid[]
+    balance: number
 }
 export type Bid = {
-    auction: AuctionItem,
-    bidder: User
+    id: number,
+    biddedAmount: number,
+    bidder: User,
+    auctionID: number,
+    bidderID: number
 }
 export type Product = {
     id: number,
     name: string,
-
+    category: Category,
+    imagePath: string,
+    categoryID: number
 }
 export type Category = {
     id: number,
-    name: number,
-    parentCategory: Category
+    name: string,
+    children: Category[],
+    parentCategoryID: number
 }

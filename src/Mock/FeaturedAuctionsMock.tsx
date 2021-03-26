@@ -21,13 +21,10 @@ import {
 import ItemDisplayPage from "../Pages/ItemDisplayPage";
 
 
-interface AuctionsPageProps {
-    DetailsHandler: (item: AuctionItem) => void
-}
-export default function FeaturedAuctionsMock(Props: AuctionsPageProps) {
+/*export default function FeaturedAuctionsMock() {
   let user: User = {
     id: 1,
-    wallet: 150000,
+    balance: 150000,
     email: "kisbela@gmail.com",
     bids: [],
   };
@@ -44,6 +41,7 @@ export default function FeaturedAuctionsMock(Props: AuctionsPageProps) {
       name: products[0].name,
       highest_bid: 150,
       description: "Apple iPhone X mobile phone, used for 3 months",
+      highlighted: true
     },
     {
       id: 2,
@@ -52,6 +50,7 @@ export default function FeaturedAuctionsMock(Props: AuctionsPageProps) {
       name: products[1].name,
       highest_bid: 170,
       description: "Samsung Galaxy A41 telefon, fekete",
+      highlighted: true
     },
     {
       id: 3,
@@ -60,6 +59,7 @@ export default function FeaturedAuctionsMock(Props: AuctionsPageProps) {
       name: products[2].name,
       highest_bid: 2100,
       description: "IKEA Jahrmürgangühl étkezőasztal, fehér",
+      highlighted: true
     },
   ];
   user.bids = [
@@ -82,7 +82,7 @@ export default function FeaturedAuctionsMock(Props: AuctionsPageProps) {
             {item.description}
           </Card.Body>
           <Card.Footer>
-            <Link to={"/auctions/".concat(item.id.toString())} onClick = {() => Props.DetailsHandler(item)}>Details</Link>
+            <Link to={"/auctions/".concat(item.id.toString())}>Details</Link>
             <br />
             Highest bid: {item.highest_bid}
             <Form>
@@ -98,3 +98,4 @@ export default function FeaturedAuctionsMock(Props: AuctionsPageProps) {
     </CardGroup>
   );
 }
+*/

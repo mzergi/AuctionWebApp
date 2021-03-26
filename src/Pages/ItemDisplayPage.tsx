@@ -12,7 +12,7 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps)
         <Container fluid>
             <Row>
                 <Col className = "d-flex justify-content-center">
-                    <h3>{Props.auction.name}</h3>
+                    <h3>{Props.auction.product.name}</h3>
                 </Col>
             </Row>
         </Container>
