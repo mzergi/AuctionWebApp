@@ -9,7 +9,7 @@ import { propTypes } from "react-bootstrap/esm/Image";
 export default function Side() {
     const url = "http://localhost:5000/api/auctionspage/categories";
     let content = useRef(
-        <div>
+        <div style = {{display: "flex", justifyContent: "center", alignItems: "center"}}>
             <Spinner
             animation="border"
             role="status"
