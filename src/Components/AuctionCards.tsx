@@ -31,20 +31,19 @@ import axios from 'axios';
 import AuctionCard from './AuctionCard';
 
 interface AuctionCardsProps {
-  highlighted: boolean
+  highlighted: boolean,
+  items: AuctionItem[]
 }
 
 export default function AuctionCards(Props: AuctionCardsProps){
 
   const url = (Props.highlighted ? "http://localhost:5000/api/auctionspage/auctions/highlighted" : "http://localhost:5000/api/auctionspage/auctions/basic");
 
-  var starterauction: AuctionItem[] = [];
-
   const onDetailsClick = () => {
     
   }
   
-  const [auctions, setAuctions] = useState(starterauction);
+  const [auctions, setAuctions] = useState(Props.items);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,8 +51,8 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
       setAuctions(result.data)
     };
-
-    fetchData();
+    if(auctions.length === 0)
+      fetchData();
   }, [auctions]);
 
   const postBid = async (bid: Bid, value: number, item: AuctionItem) => {

@@ -13,7 +13,7 @@ export default function AuctionsPage() {
         <Container fluid>
             <Row>
                 <Col xs={2} id="sidebar-wrapper">
-                    <Sidebar />
+                    <Sidebar navigationurl = {"/auctions/category/"}/>
                 </Col>
                 <Col>
                     <Row className = "mt-4">
@@ -23,7 +23,7 @@ export default function AuctionsPage() {
                     </Row>
                     <Row>
                         <Col className="d-flex">
-                            <AuctionCards highlighted = {true}/>
+                            <AuctionCards highlighted = {true} items = {[]}/>
                         </Col>
                     </Row>
 
@@ -35,7 +35,7 @@ export default function AuctionsPage() {
                     </Row>
                     <Row>
                         <Col className="d-flex">
-                            <AuctionCards highlighted = {false}/>
+                            <AuctionCards highlighted = {false} items = {[]}/>
                         </Col>
                     </Row>
                 </Col>

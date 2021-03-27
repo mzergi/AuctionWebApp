@@ -1,9 +1,11 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {AuctionDetailsSlice} from '../Reducers/AuctionDetailsReducer';
+import {AuctionsQuerySlice} from '../Reducers/AuctionsQueryReducer';
 
 export const store = configureStore({
     reducer: {
-        details: AuctionDetailsSlice.reducer
+        details: AuctionDetailsSlice.reducer,
+        items: AuctionsQuerySlice.reducer,
     }
 })
 

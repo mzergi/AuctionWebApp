@@ -4,10 +4,19 @@ import { Card, Row, Col, CardGroup, Container, Spinner } from "react-bootstrap";
 import axios from "axios";
 import {Category} from "../Model/auction_types";
 import { propTypes } from "react-bootstrap/esm/Image";
+import { store } from '../App/store';
+import { setQueriedItems, setCategoryID } from "../Reducers/AuctionsQueryReducer";
+import {Link, withRouter} from 'react-router-dom';
+import { useAppSelector, useAppDispatch } from '../App/hooks';
 
+interface SideBarProps{
+    navigationurl: string
+}
 
-export default function Side() {
+export default function Side(Props: SideBarProps) {
     const url = "http://localhost:5000/api/auctionspage/categories";
+    const navigateonclick = "http://localhost:3000/auctions/category/";
+
     let content = useRef(
         <div style = {{display: "flex", justifyContent: "center", alignItems: "center"}}>
             <Spinner
@@ -18,6 +27,13 @@ export default function Side() {
             </Spinner>
         </div>
     )
+
+    let getAuctionsOfCategory = (id: number) => {
+
+        store.dispatch(setCategoryID(id));
+
+    }
+
     var startercategory: Category[] = [];
     const [categories, setCategories] = useState(startercategory);
 
@@ -38,7 +54,7 @@ export default function Side() {
                     <Card.Body>
                         <b>Select a Category to find auctions faster!</b>
                         {categories.map((item: Category) => (
-                            <div className="d-flex categories_wrapper mt-3"> <div className="categories_item">{item.name}</div></div>
+                            <Link to = {Props.navigationurl.concat(item.id.toString())} style = {{textDecoration : "none"}}><div className="d-flex categories_wrapper mt-3" onClick = {() => {getAuctionsOfCategory(item.id)}}> <div className="categories_item">{item.name}</div></div></Link>
                         ))}
                             
                     </Card.Body>
