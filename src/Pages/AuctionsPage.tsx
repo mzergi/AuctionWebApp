@@ -6,6 +6,7 @@ import AuctionCards from "../Components/AuctionCards";
 import "../styles/auctionspage_styles.css";
 import "../Mock/FeaturedAuctionsMock";
 import {AuctionItem} from "../Model/auction_types";
+import SearchBar from "../Components/SearchBar";
 
 
 export default function AuctionsPage() {
@@ -17,7 +18,7 @@ export default function AuctionsPage() {
                 </Col>
                 <Col>
                     <Row className = "mt-4">
-                        <Col className="d-flex justify-content-center">
+                        <Col className="d-flex justify-content-start">
                             <h5>Featured auctions</h5>
                         </Col>
                     </Row>
@@ -29,7 +30,7 @@ export default function AuctionsPage() {
 
 
                     <Row className = "mt-4">
-                        <Col className="d-flex justify-content-center">
+                        <Col className="d-flex justify-content-start">
                             <h5>Other auctions</h5>
                         </Col>
                     </Row>
