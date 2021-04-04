@@ -9,6 +9,7 @@ import { AuctionItem} from "../Model/auction_types";
 import { store } from '../App/store';
 import axios from "axios";
 import { withRouter } from 'react-router';
+import { setQueriedItems, setCategoryID as setStoreCategory } from "../Reducers/AuctionsQueryReducer";
 
 interface QueriedAuctionsPageProps {
     categoryID : number,
@@ -27,6 +28,7 @@ export default function QueriedAuctionsPage(Props: QueriedAuctionsPageProps) {
 
     useEffect(() => {
         const fetchData = async () => {
+            //category or search query magic
             if(items.length === 0 && categoryID !== 0){
                 const result = await axios(url.concat(categoryID.toString()));
             
@@ -54,7 +56,7 @@ export default function QueriedAuctionsPage(Props: QueriedAuctionsPageProps) {
             <Container fluid>
             <Row>
                 <Col xs={2} id="sidebar-wrapper">
-                    <Sidebar navigationurl = {"./"}/>
+                    <Sidebar/>
                 </Col>
                 <Col>
                     <Row className = "mt-4">

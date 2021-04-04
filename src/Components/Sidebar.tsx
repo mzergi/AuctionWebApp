@@ -8,12 +8,10 @@ import { store } from '../App/store';
 import { setQueriedItems, setCategoryID } from "../Reducers/AuctionsQueryReducer";
 import {Link, withRouter} from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../App/hooks';
+import history from "../App/history";
+import {AuctionItem} from "../Model/auction_types";
 
-interface SideBarProps{
-    navigationurl: string
-}
-
-export default function Side(Props: SideBarProps) {
+export default function Side() {
     const url = "http://localhost:5000/api/auctionspage/categories";
     const navigateonclick = "http://localhost:3000/auctions/category/";
 
@@ -31,6 +29,9 @@ export default function Side(Props: SideBarProps) {
     let getAuctionsOfCategory = (id: number) => {
 
         store.dispatch(setCategoryID(id));
+        store.dispatch(setQueriedItems([] as AuctionItem[]));
+
+        history.push("/auctions/category/" + id.toString());
 
     }
 
@@ -54,7 +55,7 @@ export default function Side(Props: SideBarProps) {
                     <Card.Body>
                         <b>Select a Category to find auctions faster!</b>
                         {categories.map((item: Category) => (
-                            <Link to = {Props.navigationurl.concat(item.id.toString())} style = {{textDecoration : "none"}}><div className="d-flex categories_wrapper mt-3" onClick = {() => {getAuctionsOfCategory(item.id)}}> <div className="categories_item">{item.name}</div></div></Link>
+                            <div className="d-flex categories_wrapper mt-3" onClick = {() => {getAuctionsOfCategory(item.id)}}> <div className="categories_item">{item.name}</div></div>
                         ))}
                             
                     </Card.Body>

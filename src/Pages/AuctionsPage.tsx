@@ -14,7 +14,7 @@ export default function AuctionsPage() {
         <Container fluid>
             <Row>
                 <Col xs={2} id="sidebar-wrapper">
-                    <Sidebar navigationurl = {"/auctions/category/"}/>
+                    <Sidebar/>
                 </Col>
                 <Col>
                     <Row className = "mt-4">

@@ -78,6 +78,7 @@ function App() {
           <ItemDisplayPage auction={displayedItem} />
         </Route>
         <Route exact path={"/auctions/category/".concat(categoryID.toString())} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
+        <Route exact path={"/auctions/search"} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
       </Switch>
       </div>
     )

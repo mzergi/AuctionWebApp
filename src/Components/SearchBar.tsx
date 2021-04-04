@@ -6,15 +6,25 @@ import { FaSearch } from 'react-icons/fa';
 import "../styles/auctionspage_styles.css";
 import { useAppSelector, useAppDispatch } from '../App/hooks';
 import { store } from '../App/store';
-import {AuctionItem} from '../Model/auction_types';
+import { AuctionItem } from '../Model/auction_types';
+import { setQueriedItems, setCategoryID } from "../Reducers/AuctionsQueryReducer";
+import history from "../App/history";
+
 
 export default function SearchBar() {
     let starteritems: AuctionItem[] = [];
-    const [items, setItems] = useState(starteritems);
     const [searchQuery, setQuery] = useState("");
 
+    const url = "http://localhost:5000/api/auctionspage/auctions/search"
+
     let onSearchClick = () => {
-        alert(searchQuery);
+        axios.get(url, {params: {query: searchQuery}})
+        .then((response) =>{
+            store.dispatch(setQueriedItems(response.data));
+            store.dispatch(setCategoryID(0));
+
+            history.push("/auctions/search");
+        });
     }
 
     return (
