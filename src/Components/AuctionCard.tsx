@@ -46,7 +46,7 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     const user = useAppSelector(state => state.loginstate.user);
 
     const sendBid = async () => {
-        let bid: Bid = {id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: 1, bidder: {} as User}
+        let bid: Bid = {id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: user.id, bidder: {} as User}
 
         const result = await axios.patch(url, bid);
 
