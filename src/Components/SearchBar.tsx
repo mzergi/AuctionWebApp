@@ -14,7 +14,7 @@ export default function SearchBar() {
     const [searchQuery, setQuery] = useState("");
 
     let onSearchClick = () => {
-        let data = axios.get("")
+        alert(searchQuery);
     }
 
     return (
@@ -24,7 +24,7 @@ export default function SearchBar() {
                     <Form.Control type="text" placeholder="Search..." className="searchBarInput" value={searchQuery} onChange={e => setQuery(e.target.value)}/>
                 </Col>
                 <Form.Label column sm={2}>
-                    <Button variant="primary" className="mr-4 searchBarButton" onClick= {onSearchClick}>
+                    <Button variant="primary" className="searchBarButton" style ={{marginLeft: "-1rem", borderRadius: "12px"}} onClick= {onSearchClick}>
                         <FaSearch style={{color: "darkgray", marginBottom: "0.35rem"}} />
                     </Button>
                 </Form.Label>

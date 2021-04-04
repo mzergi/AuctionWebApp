@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Redirect, Route, Link } from "react-router-dom";
+import { Router, Switch, Redirect, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Nav, Navbar, Row, Col } from "react-bootstrap";
 import './App.css';
@@ -11,6 +11,7 @@ import { AuctionItem, Product, User, Bid } from "../Model/auction_types";
 import { useAppSelector, useAppDispatch } from './hooks';
 import QueriedAuctionsPage from '../Pages/QueriedAuctionsPage';
 import "../styles/auctionspage_styles.css";
+import history from "./history";
 
 function App() {
   const displayedItem = useAppSelector(state => state.details.auctionitem);
@@ -62,7 +63,7 @@ function App() {
                 </Link>
           </Nav.Item>
         </Nav>
-        <Col className="ml-auto align-items-end" sm={3}>
+        <Col className="ml-auto" sm={2}>
           <SearchBar />
         </Col>
       </Navbar>
@@ -82,7 +83,7 @@ function App() {
     )
   }
   return (
-    <Router>
+    <Router history = {history}>
       <Switch>
        <Route path="/login" component={notLoggedInRoutes}/>
        <Route component={loggedInRoutes}/>

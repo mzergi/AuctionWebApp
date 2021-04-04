@@ -43,6 +43,8 @@ export default function AuctionCard(Props: AuctionCardsProps) {
 
     const[highestbidbyuser, setHighestBidByUser] = useState({} as Bid);
 
+    const user = useAppSelector(state => state.loginstate.user);
+
     const sendBid = async () => {
         let bid: Bid = {id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: 1, bidder: {} as User}
 
@@ -52,13 +54,10 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     }
 
     const getHighestBidByUser = async () => {
-
-        const result = await axios(url.concat("/highestByUser/1"));
+        const result = await axios(url.concat("/highestByUser/").concat(user.id.toString()));
 
         setHighestBidByUser(result.data);
     }
-
-    getHighestBidByUser();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,11 +72,8 @@ export default function AuctionCard(Props: AuctionCardsProps) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));
-    }
-
-    useEffect(() => {
         getHighestBidByUser();
-    }, [biddedvalue]);
+    }
 
     return(
         <Card className="d-flex justify-content-center" style = {{width: "15rem"}}>

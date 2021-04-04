@@ -15,7 +15,9 @@ export type User = {
     id: number,
     password: string,
     email: string,
-    balance: number
+    balance: number,
+    name: string,
+    birth: Date
 }
 export type Bid = {
     id: number,
