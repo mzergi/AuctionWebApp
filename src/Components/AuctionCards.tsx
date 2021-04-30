@@ -30,8 +30,6 @@ import axios from 'axios';
 
 import AuctionCard from './AuctionCard';
 
-import * as signalR from "@microsoft/signalr";
-
 interface AuctionCardsProps {
   highlighted: boolean,
   items: AuctionItem[]
