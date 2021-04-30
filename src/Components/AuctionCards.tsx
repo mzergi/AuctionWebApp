@@ -30,6 +30,8 @@ import axios from 'axios';
 
 import AuctionCard from './AuctionCard';
 
+import * as signalR from "@microsoft/signalr";
+
 interface AuctionCardsProps {
   highlighted: boolean,
   items: AuctionItem[]
@@ -39,18 +41,29 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
   const url = (Props.highlighted ? "http://localhost:5000/api/auctionspage/auctions/highlighted" : "http://localhost:5000/api/auctionspage/auctions/basic");
 
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5000/auctionshub")
+    .build();
+  
+  connection.start();
+
   const onDetailsClick = () => {
     
   }
   
   const [auctions, setAuctions] = useState(Props.items);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios(url);
+  const fetchData = async () => {
+    const result = await axios(url);
 
-      setAuctions(result.data)
-    };
+    setAuctions(result.data)
+  };
+
+  connection.on("bidReceived", (bid: Bid) => {
+    fetchData();
+  });
+
+  useEffect(() => {
     if(auctions.length === 0)
       fetchData();
   }, [auctions]);
@@ -58,6 +71,8 @@ export default function AuctionCards(Props: AuctionCardsProps){
   const postBid = async (bid: Bid, value: number, item: AuctionItem) => {
     bid.biddedAmount = value;
     const result = await axios.patch(url.concat("/".concat(bid.auctionID.toString())), bid);
+
+    connection.send("newMessage", bid);
 
     item = result.data;
   }

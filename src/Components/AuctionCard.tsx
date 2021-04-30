@@ -28,6 +28,7 @@ import { store } from '../App/store';
 
 import axios from 'axios';
 import { setConstantValue } from "typescript";
+import * as signalR from "@microsoft/signalr";
 
 interface AuctionCardsProps {
     item: AuctionItem
