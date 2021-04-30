@@ -24,7 +24,8 @@ export type Bid = {
     biddedAmount: number,
     bidder: User,
     auctionID: number,
-    bidderID: number
+    bidderID: number,
+    bidTime: Date
 }
 export type Product = {
     id: number,

@@ -60,7 +60,7 @@ export default function QueriedAuctionsPage(Props: QueriedAuctionsPageProps) {
                 </Col>
                 <Col>
                     <Row className = "mt-4">
-                        <Col className="d-flex justify-content-center">
+                        <Col className="d-flex justify-content-start">
                             <h5>Auctions found:</h5>
                         </Col>
                     </Row>
