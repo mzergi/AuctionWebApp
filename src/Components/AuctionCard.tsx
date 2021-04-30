@@ -28,6 +28,7 @@ import { store } from '../App/store';
 
 import axios from 'axios';
 import { setConstantValue } from "typescript";
+import history from "../App/history";
 
 interface AuctionCardsProps {
     item: AuctionItem
@@ -39,14 +40,14 @@ export default function AuctionCard(Props: AuctionCardsProps) {
 
     const [item, setItem] = useState(Props.item);
 
-    const[biddedvalue, setBiddedValue] = useState((item.topBid !== null) ? item.topBid.biddedAmount : item.startingPrice);
+    const [biddedvalue, setBiddedValue] = useState((item.topBid !== null) ? item.topBid.biddedAmount : item.startingPrice);
 
-    const[highestbidbyuser, setHighestBidByUser] = useState({} as Bid);
+    const [highestbidbyuser, setHighestBidByUser] = useState({} as Bid);
 
     const user = useAppSelector(state => state.loginstate.user);
 
     const sendBid = async () => {
-        let bid: Bid = {id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: user.id, bidder: {} as User}
+        let bid: Bid = { id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: user.id, bidder: {} as User, bidTime: new Date() }
 
         const result = await axios.patch(url, bid);
 
@@ -72,11 +73,10 @@ export default function AuctionCard(Props: AuctionCardsProps) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));
-        getHighestBidByUser();
     }
 
-    return(
-        <Card className="d-flex justify-content-center" style = {{width: "15rem"}}>
+    return (
+        <Card className="d-flex justify-content-center" style={{ width: "15rem" }}>
             <Card.Body>
                 <Card.Title>{item.product.name}</Card.Title>
             Picture
@@ -95,8 +95,8 @@ export default function AuctionCard(Props: AuctionCardsProps) {
             Highest bid: {(item.topBid === null) ? item.startingPrice : item.topBid.biddedAmount}
                 <Form>
                     <Form.Label>Your bid: {(highestbidbyuser.biddedAmount > 0) ? highestbidbyuser.biddedAmount : "None"}</Form.Label>
-                        <Form.Control name="bid_input" type="number" placeholder="Enter bid" value = {biddedvalue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)}/>
-                    <Button variant="success" className="mt-2" onClick = {() => sendBid()}>
+                    <Form.Control name="bid_input" type="number" placeholder="Enter bid" value={biddedvalue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)} />
+                    <Button variant="success" className="mt-2" onClick={() => sendBid()}>
                         Bid
               </Button>
                 </Form>

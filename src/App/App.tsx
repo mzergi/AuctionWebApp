@@ -12,6 +12,7 @@ import { useAppSelector, useAppDispatch } from './hooks';
 import QueriedAuctionsPage from '../Pages/QueriedAuctionsPage';
 import "../styles/auctionspage_styles.css";
 import history from "./history";
+import SignOutButton from "../Components/SignOutButton";
 
 function App() {
   const displayedItem = useAppSelector(state => state.details.auctionitem);
@@ -19,8 +20,6 @@ function App() {
   const categoryID = useAppSelector(state => state.items.categoryID);
 
   let q = useAppSelector(state => state.items.items)
-
-  useAppDispatch();
 
   const querieditems: AuctionItem[] = (q.length > 0) ? q : [];
   const notLoggedInRoutes = () => {
@@ -56,16 +55,17 @@ function App() {
         variant="dark"
         className="container-fluid auctionsnavbar"
       >
-        <Nav>
-          <Nav.Item>
+        <Nav className="d-flex sm-4">
+          <Nav.Item style={{marginRight:"9rem"}}>
             <Link className="nav-link" to="/auctions">
               Browse
                 </Link>
           </Nav.Item>
         </Nav>
-        <Col className="ml-auto" sm={2}>
+        <Col className="ml-auto" sm={1}>
           <SearchBar />
         </Col>
+        <SignOutButton/>
       </Navbar>
       <Switch>
         <Route exact path="/">
@@ -79,6 +79,9 @@ function App() {
         </Route>
         <Route exact path={"/auctions/category/".concat(categoryID.toString())} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
         <Route exact path={"/auctions/search"} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
+        <Route exact path="/login">
+            <LoginPage />
+        </Route>
       </Switch>
       </div>
     )

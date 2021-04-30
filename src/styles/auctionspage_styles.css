@@ -18,7 +18,7 @@
     border-style: solid;
     border-color: darkgray;
     border-radius: 12px;
-    margin-right: 2rem;
+    margin-right: 20rem;
     margin-top: 1rem;
     height: 2.5rem;
     transform: translate(-50%, -90%);
@@ -28,6 +28,7 @@
 
 .searchBarWrapper:focus-within {
     width: 20rem;
+    transform: translate(-55%, -90%);
 }
 
 .searchBarInput {
@@ -48,21 +49,22 @@
     width: 18rem;
 }
 
-.searchBarButton {
+.searchBarButton, .signOutButton {
     margin-top: -0.5rem;
     border: none;
     background-color: transparent;
     height: 2.1rem;
+    margin-left: 1rem;
 }
 
-.searchBarButton:hover {
+.searchBarButton:hover, .signOutButton:hover {
     border: none !important;
     background-color: lightgrey !important;
     box-shadow: none !important;
     outline: none !important;
 }
 
-.searchBarButton:focus {
+.searchBarButton:focus, .signOutButton:focus {
     border: none !important;
     background-color: lightgrey !important;
     box-shadow: none !important;
