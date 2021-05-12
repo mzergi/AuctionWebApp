@@ -41,11 +41,7 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
   const url = (Props.highlighted ? "http://localhost:5000/api/auctionspage/auctions/highlighted" : "http://localhost:5000/api/auctionspage/auctions/basic");
 
-  const connection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5000/auctionshub")
-    .build();
-  
-  connection.start();
+  const connection = useAppSelector(state => state.connection.connection);
 
   const onDetailsClick = () => {
     

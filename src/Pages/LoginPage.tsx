@@ -14,6 +14,7 @@ import moment from "moment";
 //bejelentkezés és regisztrálás Katona Tamás szakdolgozata alapján
 
 export default function LoginPage() {
+
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [registeredPopupIsOpen, setRegisterPopup] = React.useState(false);
   const [loggedInPopupIsOpen, setLoggedInPopup] = React.useState(false);
@@ -28,6 +29,10 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [regName, setRegName] = React.useState("");
   const [regBirth, setRegBirth] = React.useState(new Date());
+
+  if (window.localStorage.getItem("jwtToken") && loginEmail.length === 0){
+    history.push("/auctions");
+  }
 
   const url = "http://localhost:5000/auth"
 

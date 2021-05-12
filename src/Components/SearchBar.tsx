@@ -33,7 +33,7 @@ export default function SearchBar() {
                 <Col sm={9} className="pr-2 mt-2">
                     <Form.Control type="text" placeholder="Search..." className="searchBarInput" value={searchQuery} onChange={e => setQuery(e.target.value)}/>
                 </Col>
-                <Form.Label column sm={2}>
+                <Form.Label column sm={1}>
                     <Button variant="primary" className="searchBarButton" style ={{marginLeft: "-1rem", borderRadius: "12px"}} onClick= {onSearchClick}>
                         <FaSearch style={{color: "darkgray", marginBottom: "0.35rem"}} />
                     </Button>

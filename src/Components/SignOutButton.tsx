@@ -18,6 +18,8 @@ export default function SignOutButton() {
     const handleSignout = async () => {
         LoginActions.logout();
 
+        window.localStorage.removeItem("jwtToken");
+
         setLoggedOutPopup(true);
 
         await delay(3000);
@@ -32,7 +34,7 @@ export default function SignOutButton() {
             <Row>
                 <Col>
                     <Button onClick={() => handleSignout()} className="signOutButton">
-                        <FaSignOutAlt style={{color: "darkgray", marginBottom: "0.35rem"}} />
+                        <FaSignOutAlt style={{color: "darkgray"}} />
                     </Button>
                 </Col>
             </Row>

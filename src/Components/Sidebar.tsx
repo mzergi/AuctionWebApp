@@ -32,7 +32,6 @@ export default function Side() {
         store.dispatch(setQueriedItems([] as AuctionItem[]));
 
         history.push("/auctions/category/" + id.toString());
-
     }
 
     var startercategory: Category[] = [];

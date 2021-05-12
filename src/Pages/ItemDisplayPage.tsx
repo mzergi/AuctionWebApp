@@ -10,6 +10,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import axios from 'axios';
 import { useAppSelector, useAppDispatch } from '../App/hooks';
 import { store } from '../App/store';
+import * as signalR from "@microsoft/signalr";
 
 interface ItemDisplayPageProps {
     auction: AuctionItem
@@ -23,6 +24,8 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
 
     const user = useAppSelector(state => state.loginstate.user);
 
+    const connection = useAppSelector(state => state.connection.connection);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));
     }
@@ -35,13 +38,17 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
         setItem(result.data);
     }
 
+    const fetchData = async () => {
+        const result = await axios(url);
+
+        setItem(result.data)
+    };
+
+    connection.on("bidReceived", (bid: Bid) => {
+        fetchData();
+    });
+
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(url);
-
-            setItem(result.data)
-        };
-
         fetchData();
     }, [item]);
     return (
@@ -103,7 +110,7 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
 
                 <Col className="d-flex justify-content-center detailsPostBidWrapper">
                     <Row>
-                        <Col className="d-flex">
+                        <Col className="d-flex" style={{marginTop: "5%"}}>
                             <Form>
                                 <Form.Row>
                                     <Form.Control name="bid_input" size="lg" className="detailsPostBidInput" type="number" placeholder="Enter bid" value={biddedvalue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)} />
@@ -111,7 +118,7 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
                             </Form>
                         </Col>
                         <Col>
-                            <Button variant="success" size="lg" onClick = {() => sendBid()}>Place bid</Button>
+                            <Button variant="success" size="lg" onClick = {() => sendBid()} style={{marginTop: "-5%", marginLeft: "-1.5%"}}>Place bid</Button>
                         </Col>
                     </Row>
                 </Col>

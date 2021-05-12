@@ -125,4 +125,17 @@
 .categories_wrapper:hover:after{
     display: block;
 }
+.followed-auctions-wrapper {
+    margin-top: 5%;
+}
+.followed-auctions-card {
+    margin-top: 3%;
+    transition: 0.4s;
+    width:auto;
+}
+
+.followed-auctions-card:hover {
+    background-color:royalblue;
+    color: white;
+}
 

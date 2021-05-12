@@ -31,8 +31,6 @@
     border-radius: 10px;
     overflow: scroll;
     overflow-x: hidden;
-    border-style: solid;
-    border-color:lightskyblue;
 }
 
 .detailsBidsWrapper {

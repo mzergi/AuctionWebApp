@@ -13,6 +13,14 @@ import QueriedAuctionsPage from '../Pages/QueriedAuctionsPage';
 import "../styles/auctionspage_styles.css";
 import history from "./history";
 import SignOutButton from "../Components/SignOutButton";
+import CreateAuctionPage from "../Pages/CreateAuctionPage";
+import { store } from '../App/store';
+import { LoginActions } from "../Reducers/UserLoginReducer";
+import "../styles/navbar-logged-in.css";
+import MyBidsPage from "../Pages/MyBidsPage";
+import { FaUserCircle } from 'react-icons/fa';
+import ProfilePage from "../Pages/ProfilePage";
+import * as signalR from "@microsoft/signalr";
 
 function App() {
   const displayedItem = useAppSelector(state => state.details.auctionitem);
@@ -20,6 +28,16 @@ function App() {
   const categoryID = useAppSelector(state => state.items.categoryID);
 
   let q = useAppSelector(state => state.items.items)
+
+  const dispatch = useAppDispatch();
+
+  if (localStorage.jwtToken) {
+    dispatch(LoginActions.checkAuthentication());
+  }
+  else {
+    localStorage.clear();
+    history.push("/login");
+  }
 
   const querieditems: AuctionItem[] = (q.length > 0) ? q : [];
   const notLoggedInRoutes = () => {
@@ -55,16 +73,38 @@ function App() {
         variant="dark"
         className="container-fluid auctionsnavbar"
       >
-        <Nav className="d-flex sm-4">
-          <Nav.Item style={{marginRight:"9rem"}}>
+        <Nav className="d-flex sm-4 align-items-center">
+          <Nav.Item>
+            <div className="username-on-navbar">{store.getState().loginstate.user.name}</div>
+          </Nav.Item>
+          <Nav.Item style={{marginLeft:"2rem"}}>
             <Link className="nav-link" to="/auctions">
               Browse
                 </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link className="nav-link" to="/followed">
+              Followed auctions
+            </Link>
+          </Nav.Item>
+          <Nav.Item style={{marginRight:"9rem"}}>
+            <Link className="nav-link" to="/create-auction">
+              Create auction
+            </Link>
           </Nav.Item>
         </Nav>
         <Col className="ml-auto" sm={1}>
           <SearchBar />
         </Col>
+        <div>
+          <Row>
+            <Col>
+                <Link className="nav-link user-icon" to="/profile">
+                  <FaUserCircle/>
+                </Link>
+            </Col>
+          </Row>
+        </div>
         <SignOutButton/>
       </Navbar>
       <Switch>
@@ -79,8 +119,17 @@ function App() {
         </Route>
         <Route exact path={"/auctions/category/".concat(categoryID.toString())} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
         <Route exact path={"/auctions/search"} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
+        <Route exact path={"/create-auction"}>
+          <CreateAuctionPage/>
+        </Route>
+        <Route exact path="/followed">
+          <MyBidsPage/>
+        </Route>
         <Route exact path="/login">
             <LoginPage />
+        </Route>
+        <Route exact path="/profile">
+            <ProfilePage />
         </Route>
       </Switch>
       </div>
