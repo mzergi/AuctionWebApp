@@ -112,6 +112,8 @@
     height: auto;
     padding-left: 2rem;
     padding-right: 2rem;
+    flex: content;
+    align-items: center;
 }
 
 .detailsPostBidInput {
@@ -121,5 +123,6 @@
 }
 
 .detailsPostBidButton {
-    margin-top: 1.5rem;
+    margin-top: 1.45rem;
+    margin-left: 1.5rem;
 }

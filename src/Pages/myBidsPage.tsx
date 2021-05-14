@@ -66,7 +66,7 @@ export default function MyBidsPage() {
 
   let getDisplayPage = () => {
     if(auctionClicked)
-      return <Col>{displayedItem.product.name}<ItemDisplayPage auction={displayedItem}/></Col>
+      return <Col><ItemDisplayPage auction={displayedItem}/></Col>
     else
       return <Col></Col>
   }

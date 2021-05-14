@@ -118,7 +118,7 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
                             </Form>
                         </Col>
                         <Col>
-                            <Button variant="success" size="lg" onClick = {() => sendBid()} style={{marginTop: "-5%", marginLeft: "-1.5%"}}>Place bid</Button>
+                            <Button variant="success" size="lg" className = "detailsPostBidButton" onClick = {() => sendBid()}>Place bid</Button>
                         </Col>
                     </Row>
                 </Col>
