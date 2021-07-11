@@ -4,17 +4,24 @@ import { Container, Row, Col, Form, Modal, Button } from "react-bootstrap";
 import { store } from '../App/store';
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
-import {Product, Category} from "../Model/auction_types";
+import {Product, Category, AuctionItem, User, Bid} from "../Model/auction_types";
 import moment from "moment";
+
 
 export default function CreateAuctionPage() {
 
     //TODO: category, product lekerdezes, kivalasztott category/product nyilvantartas state-ben
     // CreateAuction fv, amiben osszeallitjuk az uj auctiont
     // CreateProduct fv, amiben osszeallitjuk az uj productot
+    // Kulon create product form/modal
+    // product select dropdown
+    // category dropdown
+    // ezek betöltése
+
+    const url = "http://localhost:5000/api/auctionspage/auctions/create";
 
     //form states
-    const [product, setProduct] = useState({} as Product);
+    const [inputProduct, setProduct] = useState({} as Product);
     const [description, setDescription] = useState("");
     const [startOfAuction, setStart] = useState(new Date());
     const [endOfAuction, setEnd] = useState(new Date());
@@ -22,6 +29,39 @@ export default function CreateAuctionPage() {
     const [startingPrice, setStartingPrice] = useState(0);
     const [productCategory, setProductCategory] = useState({} as Category);
     const [productName, setProductName] = useState("");
+
+    const loggedInUser = useAppSelector(state => state.loginstate.user);
+
+    const CreateAuction = async () => {
+        var toCreate: AuctionItem = {
+            id: {} as number,
+            topBidder: {} as User,
+            name: productName,
+            product: inputProduct,
+            description: description,
+            startOfAuction: startOfAuction,
+            endOfAuction: endOfAuction,
+            bids: {} as Bid[],
+            startingPrice: startingPrice,
+            highlighted: highlighted,
+            topBid: {} as Bid,
+            createdBy: loggedInUser
+        };
+        await axios.post(url, toCreate);
+    }
+
+    const CreateProduct = () => {
+        var createProduct: Product = {
+            id: {} as number,
+            name: productName,
+            category: productCategory,
+            imagePath: "",
+            categoryID: productCategory.id
+        };
+
+        setProduct(createProduct);
+    }
+
     return(
         <Container>
             <Row>

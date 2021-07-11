@@ -9,7 +9,8 @@ export type AuctionItem = {
     endOfAuction: Date,
     bids: Bid[],
     startingPrice: number,
-    highlighted: boolean
+    highlighted: boolean,
+    createdBy: User
 }
 
 export type User = {
