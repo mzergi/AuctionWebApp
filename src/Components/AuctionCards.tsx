@@ -64,15 +64,6 @@ export default function AuctionCards(Props: AuctionCardsProps){
       fetchData();
   }, [auctions]);
 
-  const postBid = async (bid: Bid, value: number, item: AuctionItem) => {
-    bid.biddedAmount = value;
-    const result = await axios.patch(url.concat("/".concat(bid.auctionID.toString())), bid);
-
-    connection.send("newMessage", bid);
-
-    item = result.data;
-  }
-
   let content = useRef(
     <div>
       <Spinner

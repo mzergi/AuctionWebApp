@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useAppSelector, useAppDispatch } from '../App/hooks';
 import { Container, Row, Col, Form, Modal, Button } from "react-bootstrap";
 import { store } from '../App/store';
@@ -18,7 +18,8 @@ export default function CreateAuctionPage() {
     // category dropdown
     // ezek betöltése
 
-    const url = "http://localhost:5000/api/auctionspage/auctions/create";
+    const createUrl = "http://localhost:5000/api/auctionspage/auctions/create";
+    const baseUrl = "http://localhost:5000/api/";
 
     //form states
     const [inputProduct, setProduct] = useState({} as Product);
@@ -30,7 +31,22 @@ export default function CreateAuctionPage() {
     const [productCategory, setProductCategory] = useState({} as Category);
     const [productName, setProductName] = useState("");
 
+    const [loadedProducts, setLoadedProducts] = useState([] as Product[]);
+    const [loadedCategories, setLoadedCategories] = useState([] as Category[]);
+
     const loggedInUser = useAppSelector(state => state.loginstate.user);
+
+    // useEffect with empty array watched only gets called when mounted/unmounted
+    // create async function inside useEffect
+    useEffect(() => {
+        (async () => {
+                let products = await axios.get(baseUrl + "auctionspage/products");
+                setLoadedProducts(products.data);
+                let categories = await axios.get(baseUrl + "auctionspage/categories");
+                setLoadedCategories(categories.data);
+            }
+        )()
+    }, [])
 
     const CreateAuction = async () => {
         var toCreate: AuctionItem = {
@@ -47,7 +63,7 @@ export default function CreateAuctionPage() {
             topBid: {} as Bid,
             createdBy: loggedInUser
         };
-        await axios.post(url, toCreate);
+        await axios.post(createUrl, toCreate);
     }
 
     const CreateProduct = () => {
@@ -72,7 +88,9 @@ export default function CreateAuctionPage() {
                             <Form.Label className="my-1 mr-3">Category</Form.Label>
                             <Form.Control as="select" className="my-1 mr-sm-3" custom>
                                 <option value="0">Choose category</option>
-                                <option value="1">Electronics</option>
+                                {loadedCategories.map((category) => (
+                                    <option value={category.id}>{category.name}</option>
+                                ))}
                             </Form.Control>
                         </Form.Group>
                     </Form>
