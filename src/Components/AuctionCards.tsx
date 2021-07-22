@@ -62,7 +62,7 @@ export default function AuctionCards(Props: AuctionCardsProps){
   useEffect(() => {
     if(auctions.length === 0)
       fetchData();
-  }, [auctions]);
+  }, []);
 
   let content = useRef(
     <div>

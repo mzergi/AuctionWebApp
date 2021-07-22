@@ -45,7 +45,7 @@ export default function Side() {
         };
 
         fetchData();
-    }, [categories]);
+    }, []);
     if(categories.length > 0) {
         content.current = (
         <>

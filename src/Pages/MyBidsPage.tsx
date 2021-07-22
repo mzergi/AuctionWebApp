@@ -19,6 +19,8 @@ import * as signalR from "@microsoft/signalr";
 import "../styles/auctionspage_styles.css";
 import FollowedAuctionCardContent from "../Components/FollowedAuctionCardContent";
 
+
+// Todo: COMPLETE REFACTOR
 export default function MyBidsPage() {
   const [auctions, setAuctions] = useState([] as AuctionItem[]);
 
@@ -122,7 +124,7 @@ export default function MyBidsPage() {
 
   const handleClick = (item: AuctionItem) => {
     setClicked(true);
-    setDisplayed(item);
+    setDisplayed({...item});
   };
 
   return content.current;

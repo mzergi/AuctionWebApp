@@ -4,8 +4,9 @@ import {Container, Row, Col, Form, Modal, Button} from "react-bootstrap";
 import {store} from '../App/store';
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
-import {Product, Category, AuctionItem, User, Bid} from "../Model/auction_types";
+import {Product, Category, AuctionItem, User, Bid, CreateAuctionItem} from "../Model/auction_types";
 import moment from "moment";
+import history from "../App/history";
 
 
 export default function CreateAuctionPage() {
@@ -25,6 +26,8 @@ export default function CreateAuctionPage() {
 
     //form states
     const [inputProduct, setProduct] = useState({} as Product);
+    const [inputProductId, setProductId] = useState(0);
+    const [inputCategoryId, setCategoryId] = useState(0);
     const [description, setDescription] = useState("");
     const [startOfAuction, setStart] = useState(new Date());
     const [endOfAuction, setEnd] = useState(new Date());
@@ -59,56 +62,51 @@ export default function CreateAuctionPage() {
     {
         setNewProductModalIsOpen(false);
     }
-    // TODO: TEST IF IT WORKS
     async function CreateAuction(){
-        var toCreate: AuctionItem = {
-            id: {} as number,
-            topBidder: {} as User,
-            name: inputProduct.name,
-            product: inputProduct,
+        var toCreate: CreateAuctionItem = {
+            productId: inputProduct.id,
             description: description,
             startOfAuction: startOfAuction,
             endOfAuction: endOfAuction,
-            bids: {} as Bid[],
             startingPrice: startingPrice,
             highlighted: highlighted,
-            topBid: {} as Bid,
-            createdBy: loggedInUser
+            createdById: loggedInUser.id
         };
-        var result = await axios.post(createUrl, toCreate);
-        console.log(result.data);
+        var result = await axios.post(createUrl, toCreate, {headers: {"Content-Type" : "application/json"},
+        });
+
+        history.push("/auctions");
     }
-    // TODO: MAKE ASYNC, POST TO DB, LOAD BACK
-    function CreateProduct() {
-        let createProduct: Product = {
-            id: {} as number,
-            name: newProductName,
+    async function CreateProduct() {
+
+        let createdProduct = await axios.post(baseUrl + "auctionspage/products", {
+                name: newProductName,
             category: newProductCategory,
             imagePath: "",
             categoryID: newProductCategory.id
-        };
-        setProduct({...createProduct});
+        }, {headers: {"Content-Type" : "application/json"},});
+
+        setProduct({...createdProduct.data});
         setProductCategory({...newProductCategory});
         let loaded = loadedProducts;
-        loaded.push(createProduct);
+        loaded.push(createdProduct.data);
         setLoadedProducts([...loaded]);
+        setProductId(createdProduct.data.id);
         closeNewProductModal();
-        console.log(createProduct);
-        console.log(inputProduct);
-        console.log(productCategory);
     }
 
     async function CategorySelected(categoryId: number) {
-        var category = await axios.get(baseUrl + "auctionspage/categories/" + categoryId);
-        var productsOfCategory = await axios.get(baseUrl + "auctionspage/products/category/" + categoryId);
+        if(categoryId !== 0) {
+            var category = await axios.get(baseUrl + "auctionspage/categories/" + categoryId);
+            var productsOfCategory = await axios.get(baseUrl + "auctionspage/products/category/" + categoryId);
 
-        let old = loadedProducts;
-        old = productsOfCategory.data;
+            let old = loadedProducts;
+            old = productsOfCategory.data;
 
-        setLoadedProducts([...old]);
-        setProductCategory({...category.data});
-        console.log(productCategory);
-        console.log(loadedProducts);
+            setLoadedProducts([...old]);
+            setProductCategory({...category.data});
+            setCategoryId(categoryId);
+        }
     }
 
     function SetNewProductCategoryById(id: number){
@@ -118,9 +116,12 @@ export default function CreateAuctionPage() {
     }
 
     function setProductFromId(id: number){
+        if(id !== 0){
         let product = loadedProducts.find(p => p.id == id);
 
         setProduct(product as Product);
+        setProductId(id);
+        }
     }
 
     return (
@@ -146,7 +147,11 @@ export default function CreateAuctionPage() {
                                 <Form.Label>Select Product</Form.Label>
                                 <Row>
                                     <Col>
-                                        <Form.Control as="select" onChange={e => {setProductFromId(parseInt(e.currentTarget.value))}} value = {inputProduct.id} custom>
+                                        <Form.Control as="select"
+                                                      onChange={e => {setProductFromId(parseInt(e.currentTarget.value))}}
+                                                      value = {inputProduct.id}
+                                                      disabled = {inputCategoryId === 0}
+                                                      custom>
                                             <option value="0">Choose Product</option>
                                             {loadedProducts.map((product) => (
                                                 <option value={product.id}>{product.name}</option>
@@ -194,7 +199,7 @@ export default function CreateAuctionPage() {
                                                   setStartingPrice(parseInt(e.currentTarget.value));
                                               }}></Form.Control>
                             </Form.Group>
-                            <Button variant="success" onClick={CreateAuction}>Create!</Button>
+                            <Button variant="success" onClick={CreateAuction} disabled = {inputProductId === 0}>Create!</Button>
                         </Form>
                     </Form>
                 </Col>
@@ -218,8 +223,9 @@ export default function CreateAuctionPage() {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Category</Form.Label>
-                            <Form.Control as="select" custom
-                                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {SetNewProductCategoryById(parseInt(e.currentTarget.value))}}>
+                            <Form.Control as="select"
+                                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {SetNewProductCategoryById(parseInt(e.currentTarget.value))}}
+                                          defaultValue = {inputCategoryId}>
                                 <option value="0">Choose category</option>
                                 {loadedCategories.map((category) => (
                                     <option value={category.id}>{category.name}</option>

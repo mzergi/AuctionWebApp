@@ -12,6 +12,15 @@ export type AuctionItem = {
     highlighted: boolean,
     createdBy: User
 }
+export type CreateAuctionItem = {
+    productId: number,
+    description: string,
+    startOfAuction: Date,
+    endOfAuction: Date,
+    startingPrice: number,
+    highlighted: boolean,
+    createdById: number
+}
 
 export type User = {
     id: number,

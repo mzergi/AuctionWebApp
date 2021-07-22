@@ -47,30 +47,38 @@ export default function AuctionCard(Props: AuctionCardsProps) {
 
     const user = useAppSelector(state => state.loginstate.user);
 
+    const connection = useAppSelector(state => state.connection.connection);
+
+    connection.on("bidReceived", async (bid: Bid) => {
+        await fetchData();
+    });
+
     const sendBid = async () => {
         let bid: Bid = { id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: user.id, bidder: {} as User, bidTime: new Date() }
 
         const result = await axios.patch(url, bid);
 
-        setItem(result.data);
+        setItem({...result.data});
+        await getHighestBidByUser();
     }
 
     const getHighestBidByUser = async () => {
         const result = await axios(url.concat("/highestByUser/").concat(user.id.toString()));
 
-        setHighestBidByUser(result.data);
+        setHighestBidByUser({...result.data});
+        console.log(highestbidbyuser);
     }
-
+    async function fetchData (){
+        const result = await axios(url);
+        setItem({...result.data})
+        await getHighestBidByUser();
+    }
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios(url);
-
-            setItem(result.data)
-        };
-
-        fetchData();
-        getHighestBidByUser();
-    }, [item]);
+        (async () => {
+            await fetchData();
+            await getHighestBidByUser();
+        })();
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));
