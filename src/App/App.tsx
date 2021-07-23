@@ -21,6 +21,7 @@ import MyBidsPage from "../Pages/MyBidsPage";
 import { FaUserCircle } from 'react-icons/fa';
 import ProfilePage from "../Pages/ProfilePage";
 import * as signalR from "@microsoft/signalr";
+import MyAuctionsPage from "../Pages/MyAuctionsPage";
 
 function App() {
   const displayedItem = useAppSelector(state => state.details.auctionitem);
@@ -98,8 +99,15 @@ function App() {
         </Col>
         <div>
           <Row>
+            <Nav>
+              <Nav.Item>
+                <Link className="nav-link" to="/my-auctions">
+                  My auctions
+                </Link>
+              </Nav.Item>
+            </Nav>
             <Col>
-                <Link className="nav-link user-icon" to="/profile">
+                <Link className="nav-link user-icon" style={{marginTop: "0rem"}} to="/profile">
                   <FaUserCircle/>
                 </Link>
             </Col>
@@ -130,6 +138,9 @@ function App() {
         </Route>
         <Route exact path="/profile">
             <ProfilePage />
+        </Route>
+        <Route exact path="/my-auctions">
+          <MyAuctionsPage />
         </Route>
       </Switch>
       </div>

@@ -106,6 +106,7 @@ export default function CreateAuctionPage() {
             setLoadedProducts([...old]);
             setProductCategory({...category.data});
             setCategoryId(categoryId);
+            setNewProductCategory({...category.data});
         }
     }
 

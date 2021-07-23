@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Form, Col, Row, Button } from 'react-bootstrap'
+import {Form, Col, Row, Button, FormControl} from 'react-bootstrap'
 import { FaSearch } from 'react-icons/fa';
 import "../styles/auctionspage_styles.css";
 import { useAppSelector, useAppDispatch } from '../App/hooks';
@@ -27,11 +27,20 @@ export default function SearchBar() {
         });
     }
 
+    // @ts-ignore
+    function handleKeyPress(e: React.KeyboardEvent<FormControl>) {
+        if (e.key == 'Enter'){
+            onSearchClick();
+        }
+    }
+
     return (
         <Form style={{flexGrow: 1}}>
             <Form.Group as={Row} controlId="searchBar" className="searchBarWrapper" flex>
                 <Col sm={9} className="pr-2 mt-2">
-                    <Form.Control type="text" placeholder="Search..." className="searchBarInput" value={searchQuery} onChange={e => setQuery(e.target.value)}/>
+                    <Form.Control type="text" placeholder="Search..." className="searchBarInput" value={searchQuery} onChange={e => setQuery(e.target.value)}
+                    onKeyPress = {handleKeyPress}
+                    />
                 </Col>
                 <Form.Label column sm={1}>
                     <Button variant="primary" className="searchBarButton" style ={{marginLeft: "-1rem", borderRadius: "12px"}} onClick= {onSearchClick}>

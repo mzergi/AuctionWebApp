@@ -39,17 +39,17 @@ export default function MyBidsPage() {
   let left = useRef(<Col></Col>);
 
   let content = useRef(
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Spinner animation="border" role="status" className="sidebar-sticky">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
-    </div>
+      <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+      >
+        <Spinner animation="border" role="status" className="sidebar-sticky">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </div>
   );
 
   const fetchData = async () => {
@@ -78,48 +78,52 @@ export default function MyBidsPage() {
     if (alreadyQueried) {
       if (auctions.length > 0) {
         left.current = (
-          <Col className="followed-auctions-wrapper">
-            {auctions.map((item) => (
-              <Card
-                className="followed-auctions-card"
-                onClick={() => handleClick(item)}
-              >
-                <Card.Body>{item.product.name}</Card.Body>
-              </Card>
-            ))}
-          </Col>
+            <Col className="followed-auctions-wrapper">
+              {auctions.map((item) => (
+                  <Card
+                      className="followed-auctions-card"
+                      onClick={() => handleClick(item)}
+                  >
+                    <Card.Body>{item.product.name}</Card.Body>
+                  </Card>
+              ))}
+            </Col>
         );
       } else {
         left.current = (
-          <Col>
-            <h3 style={{ marginTop: "30%" }}>You have no followed auctions.</h3>
-          </Col>
+            <Col>
+              <h3 style={{ marginTop: "30%" }}>You have no followed auctions.</h3>
+            </Col>
         );
       }
     }
-  
+
     content.current = (
-      <Container>
-        <Row>
-          {left.current}
-          {getDisplayPage()}
-        </Row>
-      </Container>
+        <Container>
+          <Row>
+            {left.current}
+            {getDisplayPage()}
+          </Row>
+        </Container>
     );
   }, [auctions]);
 
+  // without div wrapping the view doesnt update
   useEffect(() => {
     if (auctionClicked) {
-      setDisplayPage(<Col>{displayedItem.product.name}<ItemDisplayPage auction={displayedItem} /></Col>);
+      content.current = (
+          <Container>
+            <Row>
+                {left.current}
+              <Col>
+                <div>
+                  <ItemDisplayPage auction={displayedItem}/>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+      );
     }
-    content.current = (
-      <Container>
-        <Row>
-          {left.current}
-          {getDisplayPage()}
-        </Row>
-      </Container>
-    );
   }, [displayedItem]);
 
   const handleClick = (item: AuctionItem) => {
@@ -127,5 +131,5 @@ export default function MyBidsPage() {
     setDisplayed({...item});
   };
 
-  return content.current;
+  return {...content.current};
 }
