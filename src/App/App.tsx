@@ -32,6 +32,14 @@ function App() {
 
   const dispatch = useAppDispatch();
 
+  let connection = store.getState().connection.connection;
+
+  useEffect(() => {
+    (async () => {
+      await connection.start();
+    })()
+  }, []);
+
   if (localStorage.jwtToken) {
     dispatch(LoginActions.checkAuthentication());
   }

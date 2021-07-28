@@ -52,16 +52,21 @@ export default function AuctionCards(Props: AuctionCardsProps){
   const fetchData = async () => {
     const result = await axios(url);
 
-    setAuctions(result.data)
+    setAuctions([...result.data]);
   };
 
-  connection.on("bidReceived", (bid: Bid) => {
-    fetchData();
+  connection.on("bidReceived", async (bid: Bid) => {
+    await fetchData();
+  });
+
+  connection.on("auctionCreated", async () => {
+    await fetchData();
   });
 
   useEffect(() => {
-    if(auctions.length === 0)
-      fetchData();
+    (async () => {
+      await fetchData();
+    })()
   }, []);
 
   let content = useRef(
@@ -77,11 +82,11 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
   if (auctions.length > 0) {
     content.current = (
-      <CardGroup>
+        <>
         {auctions.map((item) => (
           <AuctionCard item={item}/>
         ))}
-      </CardGroup>
+        </>
     )
   }
   return content.current;

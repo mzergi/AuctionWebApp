@@ -13,7 +13,7 @@ import {
     Table
 } from "react-bootstrap";
 import ItemDisplayPage from "./ItemDisplayPage";
-import { AuctionItem, Bid } from "../Model/auction_types";
+import {AuctionItem, Bid, User} from "../Model/auction_types";
 import { useAppSelector, useAppDispatch } from "../App/hooks";
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
@@ -26,6 +26,7 @@ export default function MyBidsPage() {
   const [auctions, setAuctions] = useState([] as AuctionItem[]);
   const [modalAuction, setModalAuction] = useState({} as AuctionItem);
   const [showModal, setShowModal] = useState(false);
+  const [modalBid, setModalBid] = useState(0);
 
   const userId = useAppSelector((state) => state.loginstate.user.id);
 
@@ -70,6 +71,14 @@ export default function MyBidsPage() {
 
   function closeModal(){
     setShowModal(false);
+  }
+
+  async function sendBid()
+  {
+    let bid: Bid = { id: 0, biddedAmount: modalBid, auctionID: modalAuction.id, bidderID: userId, bidder: {} as User, bidTime: new Date() }
+    const result = await axios.patch(url, bid);
+    await fetchData();
+    closeModal();
   }
 
   const handleClick = (item: AuctionItem) => {
@@ -145,10 +154,10 @@ export default function MyBidsPage() {
                       <Form.Group>
                         <Row>
                         <Col md = {8}>
-                      <Form.Control name={"bid_input"} type={"number"} placeholder={"Enter bid"}/>
+                      <Form.Control name={"bid_input"} type={"number"} placeholder={"Enter bid"} onChange = {(e) => {setModalBid(parseInt(e.currentTarget.value))}} defaultValue = {modalAuction?.topBid?.biddedAmount}/>
                         </Col>
                         <Col>
-                          <Button variant={"success"}>
+                          <Button variant={"success"} onClick = {sendBid}>
                             Bid
                           </Button>
                         </Col>
@@ -161,7 +170,7 @@ export default function MyBidsPage() {
             </Table>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant={"secondary"} onClick={closeModal}>
+            <Button variant={"secondary"} onClick={async () => {closeModal();}}>
               Close
             </Button>
           </Modal.Footer>

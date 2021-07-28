@@ -44,13 +44,15 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
         setItem(result.data)
     };
 
-    connection.on("bidReceived", (bid: Bid) => {
-        fetchData();
+    connection.on("bidReceived", async (bid: Bid) => {
+        await fetchData();
     });
 
     useEffect(() => {
-        fetchData();
-    }, [item]);
+        (async () => {
+            await fetchData();
+        })()
+    }, []);
     return (
         <Container fluid>
             <Row>

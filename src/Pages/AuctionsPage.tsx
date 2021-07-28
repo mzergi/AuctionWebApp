@@ -22,10 +22,8 @@ export default function AuctionsPage() {
                             <h5>Featured auctions</h5>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col className="d-flex">
+                    <Row className = {"g-6 d-flex"} style = {{justifyContent: "flex-start"}}>
                             <AuctionCards highlighted = {true} items = {[]}/>
-                        </Col>
                     </Row>
 
 
@@ -34,10 +32,8 @@ export default function AuctionsPage() {
                             <h5>Other auctions</h5>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col className="d-flex">
+                    <Row className={"g-6 d-flex"} style = {{justifyContent: "flex-start"}}>
                             <AuctionCards highlighted = {false} items = {[]}/>
-                        </Col>
                     </Row>
                 </Col>
             </Row>

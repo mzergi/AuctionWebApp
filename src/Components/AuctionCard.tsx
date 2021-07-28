@@ -84,31 +84,33 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     }
 
     return (
-        <Card className="d-flex justify-content-center" style={{ width: "15rem" }}>
-            <Card.Body>
-                <Card.Title>{item.product.name}</Card.Title>
-            Picture
-            <br />
-            Goes
-            <br />
-            Here
-            <br />
-            </Card.Body>
-            <Card.Footer>
-                <Link to={"/auctions/".concat(item.id.toString())} onClick={() => {
-                    store.dispatch(setDisplayed(item));
-                }
-                }>Details</Link>
-                <br />
-            Highest bid: {(item.topBid === null) ? item.startingPrice : item.topBid.biddedAmount}
-                <Form>
-                    <Form.Label>Your bid: {(highestbidbyuser.biddedAmount > 0) ? highestbidbyuser.biddedAmount : "None"}</Form.Label>
-                    <Form.Control name="bid_input" type="number" placeholder="Enter bid" value={biddedvalue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)} />
-                    <Button variant="success" className="mt-2" onClick={() => sendBid()}>
-                        Bid
-              </Button>
-                </Form>
-            </Card.Footer>
-        </Card>
+        <Col className = {"mt-2"} md = {2}>
+            <Card className="d-flex justify-content-center" style={{ width: "15rem" }}>
+                <Card.Body>
+                    <Card.Title>{item.product.name}</Card.Title>
+                    Picture
+                    <br />
+                    Goes
+                    <br />
+                    Here
+                    <br />
+                </Card.Body>
+                <Card.Footer>
+                    <Link to={"/auctions/".concat(item.id.toString())} onClick={() => {
+                        store.dispatch(setDisplayed(item));
+                    }
+                    }>Details</Link>
+                    <br />
+                    Highest bid: {(item.topBid === null) ? item.startingPrice : item.topBid.biddedAmount}
+                    <Form>
+                        <Form.Label>Your bid: {(highestbidbyuser.biddedAmount > 0) ? highestbidbyuser.biddedAmount : "None"}</Form.Label>
+                        <Form.Control name="bid_input" type="number" placeholder="Enter bid" value={biddedvalue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)} />
+                        <Button variant="success" className="mt-2" onClick={() => sendBid()}>
+                            Bid
+                        </Button>
+                    </Form>
+                </Card.Footer>
+            </Card>
+        </Col>
     )
 }
