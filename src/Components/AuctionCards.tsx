@@ -49,10 +49,14 @@ export default function AuctionCards(Props: AuctionCardsProps){
   
   const [auctions, setAuctions] = useState(Props.items);
 
-  const fetchData = async () => {
-    const result = await axios(url);
+  const [queried, setQueried] = useState(Props.items.length ? true : false);
 
-    setAuctions([...result.data]);
+  const fetchData = async () => {
+    if(!queried) {
+      const result = await axios.get(url);
+
+      setAuctions([...result.data]);
+    }
   };
 
   connection.on("bidReceived", async (bid: Bid) => {

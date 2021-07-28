@@ -21,7 +21,7 @@ import "../styles/auctionspage_styles.css";
 import FollowedAuctionCardContent from "../Components/FollowedAuctionCardContent";
 
 
-// Todo: SEND BID ON MODAL BID CLICK
+// Todo: ADD DETAILS LINK
 export default function MyBidsPage() {
   const [auctions, setAuctions] = useState([] as AuctionItem[]);
   const [modalAuction, setModalAuction] = useState({} as AuctionItem);

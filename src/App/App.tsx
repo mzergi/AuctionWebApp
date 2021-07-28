@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Router, Switch, Redirect, Route, Link } from "react-router-dom";
+import React, {useEffect} from 'react';
+import {Link, Redirect, Route, Router, Switch} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Nav, Navbar, Row, Col } from "react-bootstrap";
+import {Col, Nav, Navbar, Row} from "react-bootstrap";
 import './App.css';
 import SearchBar from '../Components/SearchBar'
 import LoginPage from "../Pages/LoginPage";
 import AuctionsPage from "../Pages/AuctionsPage";
 import ItemDisplayPage from "../Pages/ItemDisplayPage";
-import { AuctionItem, Product, User, Bid } from "../Model/auction_types";
-import { useAppSelector, useAppDispatch } from './hooks';
+import {AuctionItem} from "../Model/auction_types";
+import {useAppDispatch, useAppSelector} from './hooks';
 import QueriedAuctionsPage from '../Pages/QueriedAuctionsPage';
 import "../styles/auctionspage_styles.css";
 import history from "./history";
 import SignOutButton from "../Components/SignOutButton";
 import CreateAuctionPage from "../Pages/CreateAuctionPage";
-import { store } from '../App/store';
-import { LoginActions } from "../Reducers/UserLoginReducer";
+import {store} from '../App/store';
+import {LoginActions} from "../Reducers/UserLoginReducer";
 import "../styles/navbar-logged-in.css";
 import MyBidsPage from "../Pages/MyBidsPage";
-import { FaUserCircle } from 'react-icons/fa';
+import {FaUserCircle, FaWallet} from 'react-icons/fa';
 import ProfilePage from "../Pages/ProfilePage";
-import * as signalR from "@microsoft/signalr";
+import {HubConnectionState} from "@microsoft/signalr";
 import MyAuctionsPage from "../Pages/MyAuctionsPage";
+import WalletPage from "../Pages/WalletPage";
 
 function App() {
   const displayedItem = useAppSelector(state => state.details.auctionitem);
@@ -36,6 +37,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
+      if(connection.state === HubConnectionState.Disconnected)
       await connection.start();
     })()
   }, []);
@@ -115,6 +117,11 @@ function App() {
               </Nav.Item>
             </Nav>
             <Col>
+              <Link className={"nav-link wallet-icon"} style={{marginTop: "0rem"}} to={"/wallet"}>
+                <FaWallet/>
+              </Link>
+            </Col>
+            <Col>
                 <Link className="nav-link user-icon" style={{marginTop: "0rem"}} to="/profile">
                   <FaUserCircle/>
                 </Link>
@@ -149,6 +156,9 @@ function App() {
         </Route>
         <Route exact path="/my-auctions">
           <MyAuctionsPage />
+        </Route>
+        <Route exact path={"/wallet"}>
+          <WalletPage/>
         </Route>
       </Switch>
       </div>

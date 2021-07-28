@@ -7,10 +7,27 @@
     border: none;
     height: 2.1rem;
     background-color: transparent;
-    margin-left: 1rem;
     border-radius: 10px;
 }
 .user-icon:hover {
+    border: none !important;
+    background-color: lightgrey !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.wallet-icon {
+    margin-top: -0.5rem;
+    color: darkgray;
+    border: none;
+    height: 2.1rem;
+    background-color: transparent;
+    margin-left: 1rem;
+    margin-right: -1rem;
+    border-radius: 10px;
+}
+
+.wallet-icon:hover {
     border: none !important;
     background-color: lightgrey !important;
     box-shadow: none !important;
