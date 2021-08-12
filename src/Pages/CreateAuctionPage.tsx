@@ -11,14 +11,6 @@ import history from "../App/history";
 
 export default function CreateAuctionPage() {
 
-    //TODO: category, product lekerdezes, kivalasztott category/product nyilvantartas state-ben
-    // CreateAuction fv, amiben osszeallitjuk az uj auctiont
-    // CreateProduct fv, amiben osszeallitjuk az uj productot
-    // Kulon create product form/modal
-    // product select dropdown
-    // category dropdown
-    // ezek betöltése
-
     const createUrl = "http://localhost:5000/api/auctionspage/auctions/create";
     const baseUrl = "http://localhost:5000/api/";
 

@@ -139,3 +139,7 @@
     color: white;
 }
 
+.table-row:hover {
+    cursor: pointer;
+}
+

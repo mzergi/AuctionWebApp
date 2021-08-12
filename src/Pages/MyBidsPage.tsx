@@ -18,10 +18,10 @@ import { useAppSelector, useAppDispatch } from "../App/hooks";
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
 import "../styles/auctionspage_styles.css";
-import FollowedAuctionCardContent from "../Components/FollowedAuctionCardContent";
+import {store} from "../App/store";
+import {setDisplayed} from "../Reducers/AuctionDetailsReducer";
+import {Link} from "react-router-dom";
 
-
-// Todo: ADD DETAILS LINK
 export default function MyBidsPage() {
   const [auctions, setAuctions] = useState([] as AuctionItem[]);
   const [modalAuction, setModalAuction] = useState({} as AuctionItem);
@@ -95,6 +95,9 @@ export default function MyBidsPage() {
         <Table bordered hover>
           <thead>
             <tr>
+              <th colSpan={8}>Your auctions</th>
+            </tr>
+            <tr>
               <th>#</th>
               <th>Name</th>
               <th>Description</th>
@@ -107,7 +110,7 @@ export default function MyBidsPage() {
           </thead>
           <tbody>
           {auctions.map((a) => (
-              <tr onClick={() => handleClick(a)}>
+              <tr onClick={() => handleClick(a)} className={"table-row"}>
                 <td>{auctions.indexOf(a) + 1}</td>
                 <td>{a.product.name}</td>
                 <td>{a.description}</td>
@@ -120,6 +123,8 @@ export default function MyBidsPage() {
           ))}
           </tbody>
         </Table>
+
+
         <Modal show={showModal} onHide={closeModal}>
           <Modal.Header>
             <Modal.Title>
@@ -127,6 +132,10 @@ export default function MyBidsPage() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <Link to={"/auctions/".concat(modalAuction?.id?.toString())} onClick={() => {
+              store.dispatch(setDisplayed(modalAuction));
+            }
+            }>Details</Link>
             <Table borderless>
               <thead>
                 <tr>
