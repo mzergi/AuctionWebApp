@@ -117,18 +117,14 @@ function App() {
               </Nav.Item>
             </Nav>
             <Col>
-              <Link className={"nav-link wallet-icon"} style={{marginTop: "0rem"}} to={"/wallet"}>
-                <FaWallet/>
-              </Link>
-            </Col>
-            <Col>
                 <Link className="nav-link user-icon" style={{marginTop: "0rem"}} to="/profile">
                   <FaUserCircle/>
                 </Link>
             </Col>
           </Row>
         </div>
-        <SignOutButton/>
+          < WalletPage />
+          <SignOutButton/>
       </Navbar>
       <Switch>
         <Route exact path="/">
@@ -156,9 +152,6 @@ function App() {
         </Route>
         <Route exact path="/my-auctions">
           <MyAuctionsPage />
-        </Route>
-        <Route exact path={"/wallet"}>
-          <WalletPage/>
         </Route>
       </Switch>
       </div>

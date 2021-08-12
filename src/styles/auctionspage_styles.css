@@ -49,7 +49,7 @@
     width: 18rem;
 }
 
-.searchBarButton, .signOutButton {
+.searchBarButton, .signOutButton, .walletButton {
     margin-top: -0.5rem;
     border: none;
     background-color: transparent;
@@ -57,14 +57,14 @@
     margin-left: 1rem;
 }
 
-.searchBarButton:hover, .signOutButton:hover {
+.searchBarButton:hover, .signOutButton:hover, .walletButton:hover {
     border: none !important;
     background-color: lightgrey !important;
     box-shadow: none !important;
     outline: none !important;
 }
 
-.searchBarButton:focus, .signOutButton:focus {
+.searchBarButton:focus, .signOutButton:focus, walletButton:focus {
     border: none !important;
     background-color: lightgrey !important;
     box-shadow: none !important;
