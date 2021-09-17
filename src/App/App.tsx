@@ -91,7 +91,7 @@ function App() {
           <Nav.Item style={{marginLeft:"2rem"}}>
             <Link className="nav-link" to="/auctions">
               Browse
-                </Link>
+            </Link>
           </Nav.Item>
           <Nav.Item>
             <Link className="nav-link" to="/followed">
@@ -137,7 +137,7 @@ function App() {
           <ItemDisplayPage auction={displayedItem} />
         </Route>
         <Route exact path={"/auctions/category/".concat(categoryID.toString())} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
-        <Route exact path={"/auctions/search"} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
+        <Route path={"/auctions/search"} component={() => <QueriedAuctionsPage items={querieditems} categoryID={categoryID} />} />
         <Route exact path={"/create-auction"}>
           <CreateAuctionPage/>
         </Route>

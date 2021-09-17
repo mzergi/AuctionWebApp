@@ -87,8 +87,8 @@ export default function AuctionCards(Props: AuctionCardsProps){
   if (auctions.length > 0) {
     content.current = (
         <>
-        {auctions.map((item) => (
-          <AuctionCard item={item}/>
+        {auctions.map((item, index) => (
+          <AuctionCard item={item} key={index}/>
         ))}
         </>
     )

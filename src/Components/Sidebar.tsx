@@ -53,8 +53,8 @@ export default function Side() {
                 <Card className="mt-2">
                     <Card.Body>
                         <b>Select a Category to find auctions faster!</b>
-                        {categories.map((item: Category) => (
-                            <div className="d-flex categories_wrapper mt-3" onClick = {() => {getAuctionsOfCategory(item.id)}}> <div className="categories_item">{item.name}</div></div>
+                        {categories.map((item: Category, index) => (
+                            <div className="d-flex categories_wrapper mt-3" onClick = {() => {getAuctionsOfCategory(item.id)}} key = {index}> <div className="categories_item">{item.name}</div></div>
                         ))}
                             
                     </Card.Body>

@@ -17,7 +17,8 @@ export default function SearchBar() {
 
     const url = "http://localhost:5000/api/auctionspage/auctions/search"
 
-    let onSearchClick = () => {
+    let onSearchClick = (e: any) => {
+        e.preventDefault();
         axios.get(url, {params: {query: searchQuery}})
         .then((response) =>{
             store.dispatch(setQueriedItems(response.data));
@@ -27,19 +28,11 @@ export default function SearchBar() {
         });
     }
 
-    // @ts-ignore
-    function handleKeyPress(e: React.KeyboardEvent<FormControl>) {
-        if (e.key == 'Enter'){
-            onSearchClick();
-        }
-    }
-
     return (
-        <Form style={{flexGrow: 1}}>
-            <Form.Group as={Row} controlId="searchBar" className="searchBarWrapper" flex>
+        <Form style={{flexGrow: 1}} onSubmit={onSearchClick}>
+            <Form.Group as={Row} controlId="searchBar" className="searchBarWrapper">
                 <Col sm={9} className="pr-2 mt-2">
                     <Form.Control type="text" placeholder="Search..." className="searchBarInput" value={searchQuery} onChange={e => setQuery(e.target.value)}
-                    onKeyPress = {handleKeyPress}
                     />
                 </Col>
                 <Form.Label column sm={1}>
