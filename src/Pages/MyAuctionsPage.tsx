@@ -13,7 +13,7 @@ import {
     Table
 } from "react-bootstrap";
 import ItemDisplayPage from "./ItemDisplayPage";
-import {AuctionItem, Bid, User} from "../Model/auction_types";
+import {AuctionItem, Bid, IIndexable, User} from "../Model/auction_types";
 import { useAppSelector, useAppDispatch } from "../App/hooks";
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
@@ -21,6 +21,7 @@ import "../styles/auctionspage_styles.css";
 import {store} from "../App/store";
 import {setDisplayed} from "../Reducers/AuctionDetailsReducer";
 import {Link} from "react-router-dom";
+import moment from "moment";
 
 export default function MyBidsPage() {
     const [auctions, setAuctions] = useState([] as AuctionItem[]);
@@ -49,6 +50,13 @@ export default function MyBidsPage() {
             await fetchData();
         })()
     }, []);
+
+    function updateModalAuction(value: any, prop: string) {
+        var tmp = modalAuction;
+        (tmp as IIndexable)[prop] = value;
+        console.log((tmp as IIndexable)[prop]);
+        setModalAuction({...tmp});
+    }
 
     function findHighestBidByUser(auction: AuctionItem) : number
     {
@@ -131,7 +139,55 @@ export default function MyBidsPage() {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Formboi
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control
+                                name="edit_description"
+                                disabled = {!!modalAuction?.topBid?.biddedAmount} 
+                                as="textarea" 
+                                value={modalAuction?.description}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        updateModalAuction(e.currentTarget.value, 'description');
+                                        }}>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Starting price</Form.Label>
+                            <Form.Control
+                                name="edit_starting_price"
+                                disabled = {!!modalAuction?.topBid?.biddedAmount} 
+                                type="number" value={modalAuction?.startingPrice}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            updateModalAuction(e.currentTarget.value, 'startingPrice');
+                                        }}>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Start of auction</Form.Label>
+                            <Form.Control
+                                name="edit_start_of_auction"
+                                disabled = {Date.now() > new Date(modalAuction?.startOfAuction).getDate()}
+                                type="date" 
+                                value={moment(new Date(modalAuction?.startOfAuction)).format('YYYY-MM-DD')}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                              updateModalAuction(new Date(moment(e.currentTarget.value).format('YYYY-MM-DD')), 'startOfAuction');
+                                          }}>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>End of auction</Form.Label>
+                            <Form.Control 
+                                name="edit_end_of_auction"
+                                disabled = {Date.now() < new Date(modalAuction?.endOfAuction).getDate()}
+                                type="date" 
+                                value={moment(new Date(modalAuction?.endOfAuction)).format('YYYY-MM-DD')}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                              updateModalAuction(new Date(moment(e.currentTarget.value).format('YYYY-MM-DD')), 'endOfAuction');
+                                          }}>
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant={"secondary"} onClick={async () => {closeModal();}}>

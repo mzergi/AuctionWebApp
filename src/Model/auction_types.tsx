@@ -51,3 +51,6 @@ export type Category = {
     children: Category[],
     parentCategoryID: number
 }
+export interface IIndexable {
+    [key: string] : any;
+}
