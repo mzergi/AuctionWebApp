@@ -13,7 +13,7 @@ import {
     Table
 } from "react-bootstrap";
 import ItemDisplayPage from "./ItemDisplayPage";
-import {AuctionItem, Bid, IIndexable, User} from "../Model/auction_types";
+import {AuctionItem, Bid, IIndexable, Product, User} from "../Model/auction_types";
 import { useAppSelector, useAppDispatch } from "../App/hooks";
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
@@ -24,6 +24,10 @@ import {Link} from "react-router-dom";
 import moment from "moment";
 
 export default function MyBidsPage() {
+    const [modalProduct, setProduct] = useState({} as Product);
+    const [modalProductId, setProductId] = useState(0);
+    const [loadedProducts, setLoadedProducts] = useState([] as Product[]);
+    const [loadedCategories, setLoadedCategories] = useState([] as Category[]);
     const [auctions, setAuctions] = useState([] as AuctionItem[]);
     const [modalAuction, setModalAuction] = useState({} as AuctionItem);
     const [showModal, setShowModal] = useState(false);
@@ -32,6 +36,7 @@ export default function MyBidsPage() {
     const userId = useAppSelector((state) => state.loginstate.user.id);
 
     const url = "http://localhost:5000/api/auctionspage/auctions/created-by/";
+    const updateUrl = "http://localhost:5000/api/auctionspage/auctions/";
 
     const fetchData = async () => {
         const result = await axios(url.concat(userId.toString()));
@@ -54,7 +59,6 @@ export default function MyBidsPage() {
     function updateModalAuction(value: any, prop: string) {
         var tmp = modalAuction;
         (tmp as IIndexable)[prop] = value;
-        console.log((tmp as IIndexable)[prop]);
         setModalAuction({...tmp});
     }
 
@@ -80,11 +84,8 @@ export default function MyBidsPage() {
     function closeModal(){
         setShowModal(false);
     }
-
-    async function sendBid()
-    {
-        let bid: Bid = { id: 0, biddedAmount: modalBid, auctionID: modalAuction.id, bidderID: userId, bidder: {} as User, bidTime: new Date() }
-        const result = await axios.patch(url, bid);
+    async function updateAuction() {
+        const result = await axios.put(updateUrl + modalAuction?.id, modalAuction);
         await fetchData();
         closeModal();
     }
@@ -132,7 +133,7 @@ export default function MyBidsPage() {
             </Table>
 
 
-            <Modal show={showModal} onHide={closeModal}>
+            <Modal show={showModal && Date.now() < new Date(modalAuction?.endOfAuction).getTime()} onHide={closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {modalAuction?.product?.name}
@@ -167,7 +168,7 @@ export default function MyBidsPage() {
                             <Form.Label>Start of auction</Form.Label>
                             <Form.Control
                                 name="edit_start_of_auction"
-                                disabled = {Date.now() > new Date(modalAuction?.startOfAuction).getDate()}
+                                disabled = {Date.now() > new Date(modalAuction?.startOfAuction).getTime()}
                                 type="date" 
                                 value={moment(new Date(modalAuction?.startOfAuction)).format('YYYY-MM-DD')}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,7 +180,7 @@ export default function MyBidsPage() {
                             <Form.Label>End of auction</Form.Label>
                             <Form.Control 
                                 name="edit_end_of_auction"
-                                disabled = {Date.now() < new Date(modalAuction?.endOfAuction).getDate()}
+                                disabled = {Date.now() < new Date(modalAuction?.endOfAuction).getTime()}
                                 type="date" 
                                 value={moment(new Date(modalAuction?.endOfAuction)).format('YYYY-MM-DD')}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,9 +188,21 @@ export default function MyBidsPage() {
                                           }}>
                             </Form.Control>
                         </Form.Group>
+                        <Form.Group>
+                            <Form.Check 
+                                type="checkbox" 
+                                label="Highlight auction" 
+                                checked={modalAuction?.highlighted}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    updateModalAuction(e.target.checked, 'highlighted');
+                                }}/>
+                        </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant={"primary"} onClick={async () => {updateAuction();}}>
+                        Update
+                    </Button>
                     <Button variant={"secondary"} onClick={async () => {closeModal();}}>
                         Close
                     </Button>
