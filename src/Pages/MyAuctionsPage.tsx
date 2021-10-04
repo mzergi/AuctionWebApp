@@ -13,7 +13,7 @@ import {
     Table
 } from "react-bootstrap";
 import ItemDisplayPage from "./ItemDisplayPage";
-import {AuctionItem, Bid, IIndexable, Product, User} from "../Model/auction_types";
+import {AuctionItem, Bid, Category, IIndexable, Product, User} from "../Model/auction_types";
 import { useAppSelector, useAppDispatch } from "../App/hooks";
 import axios from "axios";
 import * as signalR from "@microsoft/signalr";
@@ -22,21 +22,30 @@ import {store} from "../App/store";
 import {setDisplayed} from "../Reducers/AuctionDetailsReducer";
 import {Link} from "react-router-dom";
 import moment from "moment";
+import {FaEdit, FaTrash} from 'react-icons/fa';
 
-export default function MyBidsPage() {
+export default function MyAuctionsPage() {
     const [modalProduct, setProduct] = useState({} as Product);
     const [modalProductId, setProductId] = useState(0);
     const [loadedProducts, setLoadedProducts] = useState([] as Product[]);
     const [loadedCategories, setLoadedCategories] = useState([] as Category[]);
+    const [productCategory, setProductCategory] = useState({} as Category);
+    const [inputCategoryId, setCategoryId] = useState(0);
+    const [modalProductCategory, setModalProductCategory] = useState({} as Category);
     const [auctions, setAuctions] = useState([] as AuctionItem[]);
     const [modalAuction, setModalAuction] = useState({} as AuctionItem);
     const [showModal, setShowModal] = useState(false);
     const [modalBid, setModalBid] = useState(0);
+    const [newProductName, setNewProductName] = useState("");
+    const [newProductCategory, setNewProductCategory] = useState({} as Category);
+
+    const [newProductModalIsOpen, setNewProductModalIsOpen] = useState(false);
 
     const userId = useAppSelector((state) => state.loginstate.user.id);
 
     const url = "http://localhost:5000/api/auctionspage/auctions/created-by/";
     const updateUrl = "http://localhost:5000/api/auctionspage/auctions/";
+    const baseUrl = "http://localhost:5000/api/";
 
     const fetchData = async () => {
         const result = await axios(url.concat(userId.toString()));
@@ -53,6 +62,10 @@ export default function MyBidsPage() {
     useEffect(() => {
         (async () => {
             await fetchData();
+            let products = await axios.get(baseUrl + "auctionspage/products");
+            setLoadedProducts(products.data);
+            let categories = await axios.get(baseUrl + "auctionspage/categories");
+            setLoadedCategories(categories.data);
         })()
     }, []);
 
@@ -83,6 +96,11 @@ export default function MyBidsPage() {
 
     function closeModal(){
         setShowModal(false);
+        setProduct({} as Product);
+        setProductId(0);
+        setProductCategory({} as Category);
+        setCategoryId(0);
+        setModalProductCategory({} as Category);
     }
     async function updateAuction() {
         const result = await axios.put(updateUrl + modalAuction?.id, modalAuction);
@@ -95,6 +113,73 @@ export default function MyBidsPage() {
         setShowModal(true);
     };
 
+    async function CategorySelected(categoryId: number) {
+        if(categoryId !== 0) {
+            var category = await axios.get(baseUrl + "auctionspage/categories/" + categoryId);
+            var productsOfCategory = await axios.get(baseUrl + "auctionspage/products/category/" + categoryId);
+
+            let old = loadedProducts;
+            old = productsOfCategory.data;
+
+            setLoadedProducts([...old]);
+            setProductCategory({...category.data});
+            setCategoryId(categoryId);
+            setModalProductCategory({...category.data});
+        }
+    }
+
+    function SetNewProductCategoryById(id: number){
+        let category = loadedCategories.find(c => c.id === id);
+
+        setNewProductCategory(category as Category);
+    }
+
+    function setProductFromId(id: number){
+        if(id !== 0){
+        let product = loadedProducts.find(p => p.id == id);
+
+        updateModalAuction(product as Product, "product");
+        updateModalAuction(id, "productId");
+        setProductId(id);
+        }
+    }
+
+        function openNewProductModal()
+    {
+        setNewProductModalIsOpen(true);
+    }
+    function closeNewProductModal()
+    {
+        setNewProductModalIsOpen(false);
+    }
+
+    async function CreateProduct() {
+
+        let createdProduct = await axios.post(baseUrl + "auctionspage/products", {
+                name: newProductName,
+            category: newProductCategory,
+            imagePath: "",
+            categoryID: newProductCategory.id
+        }, {headers: {"Content-Type" : "application/json"},});
+
+        setProduct({...createdProduct.data});
+        setProductCategory({...newProductCategory});
+        let loaded = loadedProducts;
+        loaded.push(createdProduct.data);
+        setLoadedProducts([...loaded]);
+        setProductId(createdProduct.data.id);
+        closeNewProductModal();
+    }
+
+    async function deleteAuction(id: number) {
+        const res = (await axios.delete(baseUrl + "auctionspage/auctions/" + id.toString())).data;
+        if(res) {
+            let items = [...auctions];
+            items.splice(items.findIndex(item => item.id === id), 1);
+            setAuctions([...items]);
+        }
+    }
+
     return (
         <Container fluid>
             <Row className={"justify-content-center mt-4"}>
@@ -103,7 +188,7 @@ export default function MyBidsPage() {
             <Table bordered hover>
                 <thead>
                 <tr>
-                    <th colSpan={8}>Your auctions</th>
+                    <th colSpan={9}>Your auctions</th>
                 </tr>
                 <tr>
                     <th>#</th>
@@ -114,11 +199,12 @@ export default function MyBidsPage() {
                     <th>Start of auction</th>
                     <th>End of auction</th>
                     <th>Highlighted</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {auctions.map((a) => (
-                    <tr onClick={() => handleClick(a)} className={'table-row'}>
+                    <tr className={'table-row'}>
                         <td>{auctions.indexOf(a) + 1}</td>
                         <td>{a.product.name}</td>
                         <td>{a.description}</td>
@@ -127,6 +213,17 @@ export default function MyBidsPage() {
                         <td>{a.startOfAuction}</td>
                         <td>{a.endOfAuction}</td>
                         <td>{a.highlighted ? 'Yes' : 'No'}</td>
+                        <td>
+                            {
+                            ( Date.now() < new Date(a?.endOfAuction).getTime() && 
+                            <FaEdit onClick={() => handleClick(a)} className = "ml-1">
+                            </FaEdit>)
+                            }
+                            {
+                            (Date.now() < new Date(a?.startOfAuction).getTime() || !a?.topBid?.biddedAmount) &&
+                                <FaTrash className="ml-3" onClick = {async () => {await deleteAuction(a?.id)}}></FaTrash>
+                            }
+                        </td>
                     </tr>
                 ))}
                 </tbody>
@@ -140,7 +237,42 @@ export default function MyBidsPage() {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <Form style={{marginTop: "1%"}} inline>
+                        <Form.Group>
+                            <Form.Label className="my-1 mr-3">Category</Form.Label>
+                            <Form.Control as="select" 
+                            className="my-1 mr-sm-3" 
+                            custom
+                            onChange={async(e) => {await CategorySelected(parseInt(e.target.value))}}
+                            disabled = {Date.now() > new Date(modalAuction?.startOfAuction).getTime()}>
+                                <option value="0">Choose category</option>
+                                {loadedCategories.map((category) => (
+                                    <option value={category.id}>{category.name}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
                     <Form>
+                    <Form.Group>
+                            <Form.Label>Select Product</Form.Label>
+                                <Row>
+                                    <Col>
+                                        <Form.Control as="select"
+                                                      onChange={e => {setProductFromId(parseInt(e.currentTarget.value))}}
+                                                      value = {modalProduct.id}
+                                                      disabled = {inputCategoryId === 0 || Date.now() > new Date(modalAuction?.startOfAuction).getTime()}
+                                                      custom>
+                                            <option value="0">Choose Product</option>
+                                            {loadedProducts.map((product) => (
+                                                <option value={product.id}>{product.name}</option>
+                                            ))}
+                                        </Form.Control>
+                                    </Col>
+                                    <Col>
+                                        <Button variant="success" onClick={openNewProductModal} disabled = {Date.now() > new Date(modalAuction?.startOfAuction).getTime()}>New product</Button>
+                                    </Col>
+                                </Row>
+                            </Form.Group>
                         <Form.Group>
                             <Form.Label>Description</Form.Label>
                             <Form.Control
@@ -206,6 +338,38 @@ export default function MyBidsPage() {
                     <Button variant={"secondary"} onClick={async () => {closeModal();}}>
                         Close
                     </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={newProductModalIsOpen} onHide={closeNewProductModal}>
+                <Modal.Header>
+                    <Modal.Title>Create new Product</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="text" value={newProductName}
+                                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                              setNewProductName(e.currentTarget.value);
+                                          }}>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Category</Form.Label>
+                            <Form.Control as="select"
+                                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {SetNewProductCategoryById(parseInt(e.currentTarget.value))}}
+                                          defaultValue = {inputCategoryId}>
+                                <option value="0">Choose category</option>
+                                {loadedCategories.map((category) => (
+                                    <option value={category.id}>{category.name}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={closeNewProductModal}>Close</Button>
+                    <Button variant="success" onClick={CreateProduct}>Create</Button>
                 </Modal.Footer>
             </Modal>
         </Container>

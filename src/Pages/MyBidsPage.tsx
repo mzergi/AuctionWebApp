@@ -24,19 +24,25 @@ import {Link} from "react-router-dom";
 
 export default function MyBidsPage() {
   const [auctions, setAuctions] = useState([] as AuctionItem[]);
-  const [modalAuction, setModalAuction] = useState({} as AuctionItem);
-  const [showModal, setShowModal] = useState(false);
-  const [modalBid, setModalBid] = useState(0);
+  const [bidInputs, setBidInputs] = useState([] as number[]);
 
   const userId = useAppSelector((state) => state.loginstate.user.id);
 
   const url = "http://localhost:5000/api/auctionspage/auctions/followed-by/";
 
-  const fetchData = async () => {
+  const fetchDataInit = async () => {
     const result = await axios(url.concat(userId.toString()));
 
     setAuctions([...result.data]);
+    let bids = [...bidInputs];
+    auctions.forEach(a => {bids.push(findHighestBidByUser(a))})
+    setBidInputs([...bids]);
   };
+
+  const fetchData = async () => {
+    const result = await axios(url.concat(userId.toString()));
+    setAuctions([...result.data]);
+  }
 
   const connection = useAppSelector((state) => state.connection.connection);
 
@@ -46,7 +52,7 @@ export default function MyBidsPage() {
 
   useEffect(() => {
     (async () => {
-      await fetchData();
+      await fetchDataInit();
     })()
   }, []);
 
@@ -65,26 +71,20 @@ export default function MyBidsPage() {
     return highest;
   }
 
-  function openModal(){
-    setShowModal(true);
-  }
-
-  function closeModal(){
-    setShowModal(false);
-  }
-
-  async function sendBid()
+  async function sendBid(auction: AuctionItem)
   {
-    let bid: Bid = { id: 0, biddedAmount: modalBid, auctionID: modalAuction.id, bidderID: userId, bidder: {} as User, bidTime: new Date() }
-    const result = await axios.patch(url, bid);
+    const index = auctions.indexOf(auction);
+    let bid: Bid = { id: 0, biddedAmount: bidInputs[index], auctionID: auction.id, bidderID: userId, bidder: {} as User, bidTime: new Date() }
+    const result = await axios.patch("http://localhost:5000/api/auctionspage/auctions/".concat(auction.id.toString()), bid);
     await fetchData();
-    closeModal();
   }
 
-  const handleClick = (item: AuctionItem) => {
-    setModalAuction({...item});
-    setShowModal(true);
-  };
+  function setBid(value: number, auction: AuctionItem) {
+    const index = auctions.indexOf(auction);
+    let bids = [...bidInputs];
+    bids[index] = value;
+    setBidInputs([...bids]);
+  }
 
   return (
       <Container fluid>
@@ -106,11 +106,12 @@ export default function MyBidsPage() {
               <th>Starting price</th>
               <th>Start of auction</th>
               <th>End of auction</th>
+              <th>Quick bid</th>
             </tr>
           </thead>
           <tbody>
           {auctions.map((a) => (
-              <tr onClick={() => handleClick(a)} className={"table-row"}>
+              <tr className={"table-row"}>
                 <td>{auctions.indexOf(a) + 1}</td>
                 <td>{a.product.name}</td>
                 <td>{a.description}</td>
@@ -119,71 +120,29 @@ export default function MyBidsPage() {
                 <td>{a.startingPrice}</td>
                 <td>{a.startOfAuction}</td>
                 <td>{a.endOfAuction}</td>
-              </tr>
-          ))}
-          </tbody>
-        </Table>
-
-
-        <Modal show={showModal} onHide={closeModal}>
-          <Modal.Header>
-            <Modal.Title>
-              {modalAuction?.product?.name}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Link to={"/auctions/".concat(modalAuction?.id?.toString())} onClick={() => {
-              store.dispatch(setDisplayed(modalAuction));
-            }
-            }>Details</Link>
-            <Table borderless>
-              <thead>
-                <tr>
-                  <th>
-                    Highest bid
-                  </th>
-                  <th>
-                    Your bid
-                  </th>
-                  <th>
-                    Quick bid
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className={"flex align-items-center"}>
-                  <td>
-                    {modalAuction?.topBid?.biddedAmount}
-                  </td>
-                  <td>
-                    {findHighestBidByUser(modalAuction)}
-                  </td>
-                  <td>
-                    <Form>
+                <td><Form>
                       <Form.Group>
-                        <Row>
-                        <Col md = {8}>
-                      <Form.Control name={"bid_input"} type={"number"} placeholder={"Enter bid"} onChange = {(e) => {setModalBid(parseInt(e.currentTarget.value))}} defaultValue = {modalAuction?.topBid?.biddedAmount}/>
-                        </Col>
+                      <Row>
+                        <Col md = {7}>
+                      <Form.Control 
+                      name={"bid_input"} 
+                      type={"number"} 
+                      placeholder={"Enter bid"} 
+                      onChange = {(e) => {setBid(parseInt(e.currentTarget.value), a)}} 
+                      defaultValue = {a?.topBid?.biddedAmount}/>
+                      </Col>
                         <Col>
-                          <Button variant={"success"} onClick = {sendBid}>
+                          <Button variant={"success"} onClick = {async () => {await sendBid(a)}}>
                             Bid
                           </Button>
                         </Col>
                         </Row>
                       </Form.Group>
-                    </Form>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant={"secondary"} onClick={async () => {closeModal();}}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+                    </Form></td>
+              </tr>
+          ))}
+          </tbody>
+        </Table>
       </Container>
   )
 }

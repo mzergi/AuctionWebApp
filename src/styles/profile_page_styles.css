@@ -1,0 +1,11 @@
+.profile_page_element {
+    padding: 0.2rem;
+    margin: 0.2rem;
+}
+.profile_page_image {
+    min-width: 70%;
+    min-height: 120%;
+}
+.profile_page_starter_element {
+    padding-top: 2rem;
+}

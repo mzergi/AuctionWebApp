@@ -3,6 +3,7 @@ export type AuctionItem = {
     topBidder: User,
     name: string,
     product: Product,
+    productId?: number,
     topBid: Bid,
     description: string,
     startOfAuction: Date,

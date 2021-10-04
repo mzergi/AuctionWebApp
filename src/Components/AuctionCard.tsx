@@ -84,8 +84,8 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     }
 
     return (
-        <Col className = {"mt-2"} md = {2}>
-            <Card className="d-flex justify-content-center" style={{ width: "15rem" }}>
+        <Col className = {"mt-2"} md = {3} sm = {12}>
+            <Card className="d-flex justify-content-center" style={{ width: "15rem", minHeight: "25rem"}}>
                 <Card.Body>
                     <Card.Title>{item.product.name}</Card.Title>
                     Picture
