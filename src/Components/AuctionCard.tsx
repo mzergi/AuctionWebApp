@@ -59,11 +59,11 @@ export default function AuctionCard(Props: AuctionCardsProps) {
         const result = await axios.patch(url, bid);
 
         setItem({...result.data});
-        await getHighestBidByUser();
     }
 
     const getHighestBidByUser = async () => {
         const result = await axios(url.concat("/highestByUser/").concat(user.id.toString()));
+        // endless requests shot here
 
         setHighestBidByUser({...result.data});
     }
