@@ -7,6 +7,7 @@ import * as signalR from "@microsoft/signalr";
 import {Product, Category, AuctionItem, User, Bid, CreateAuctionItem} from "../Model/auction_types";
 import moment from "moment";
 import history from "../App/history";
+import placeholder from '../assets/placeholder.jpg'
 
 
 export default function CreateAuctionPage() {
@@ -28,6 +29,7 @@ export default function CreateAuctionPage() {
     const [productCategory, setProductCategory] = useState({} as Category);
     const [newProductName, setNewProductName] = useState("");
     const [newProductCategory, setNewProductCategory] = useState({} as Category);
+    const [auctionImage, setImage] = useState({} as any);
 
     const [loadedProducts, setLoadedProducts] = useState([] as Product[]);
     const [loadedCategories, setLoadedCategories] = useState([] as Category[]);
@@ -117,10 +119,26 @@ export default function CreateAuctionPage() {
         }
     }
 
+    function imageSelected(e: any) {
+        if (e.target.files && e.target.files[0]) {
+            let file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = x => {
+                if (x && x.target) {
+                    setImage(x.target.result);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+        else {
+            setImage(placeholder);
+        }
+    }
+
     return (
         <Container>
             <Row>
-                <Col lg={5} style={{marginTop: "8%"}}>
+                <Col sm={5} style={{marginTop: "8%"}}>
                     <h3>Create new auction</h3>
                     <Form style={{marginTop: "10%"}} inline>
                         <Form.Group>
@@ -196,8 +214,14 @@ export default function CreateAuctionPage() {
                         </Form>
                     </Form>
                 </Col>
-                <Col>
-
+                <Col sm = {6}>
+                    <Form>
+                        <img src={auctionImage} alt="auction-image"/>
+                        <Form.Group>
+                            <Form.Label>Upload image</Form.Label>
+                            <Form.Control type="file" accept="image/*" onChange={imageSelected}></Form.Control>
+                        </Form.Group>
+                    </Form>
                 </Col>
             </Row>
             <Modal show={newProductModalIsOpen} onHide={closeNewProductModal}>
