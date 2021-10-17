@@ -29,7 +29,7 @@ export default function CreateAuctionPage() {
     const [productCategory, setProductCategory] = useState({} as Category);
     const [newProductName, setNewProductName] = useState("");
     const [newProductCategory, setNewProductCategory] = useState({} as Category);
-    const [auctionImage, setImage] = useState({} as any);
+    const [auctionImage, setImage] = useState(placeholder);
 
     const [loadedProducts, setLoadedProducts] = useState([] as Product[]);
     const [loadedCategories, setLoadedCategories] = useState([] as Category[]);
@@ -125,7 +125,7 @@ export default function CreateAuctionPage() {
             const reader = new FileReader();
             reader.onload = x => {
                 if (x && x.target) {
-                    setImage(x.target.result);
+                    setImage(x.target.result as any);
                 }
             }
             reader.readAsDataURL(file);
@@ -216,7 +216,7 @@ export default function CreateAuctionPage() {
                 </Col>
                 <Col sm = {6}>
                     <Form>
-                        <img src={auctionImage} alt="auction-image"/>
+                        <img src={auctionImage} alt="auction-image" className="auction_image"/>
                         <Form.Group>
                             <Form.Label>Upload image</Form.Label>
                             <Form.Control type="file" accept="image/*" onChange={imageSelected}></Form.Control>

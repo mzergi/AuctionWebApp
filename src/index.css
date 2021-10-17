@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.auction_image {
+  width: 20rem;
+  height: 20rem;
+  margin: 30px;
+}
