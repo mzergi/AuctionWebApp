@@ -23,6 +23,7 @@ import {setDisplayed} from "../Reducers/AuctionDetailsReducer";
 import {Link} from "react-router-dom";
 import moment from "moment";
 import {FaEdit, FaTrash} from 'react-icons/fa';
+import placeholder from '../assets/placeholder.jpg'
 
 export default function MyAuctionsPage() {
     const [modalProduct, setProduct] = useState({} as Product);
@@ -41,11 +42,16 @@ export default function MyAuctionsPage() {
 
     const [newProductModalIsOpen, setNewProductModalIsOpen] = useState(false);
 
+    const [auctionImage, setImage] = useState(placeholder);
+    const [createImage, setCreateImage] = useState({} as File)
+    const [auctionImageUrl, setImageUrl] = useState("");
+
     const userId = useAppSelector((state) => state.loginstate.user.id);
 
     const url = "http://localhost:5000/api/auctionspage/auctions/created-by/";
     const updateUrl = "http://localhost:5000/api/auctionspage/auctions/";
     const baseUrl = "http://localhost:5000/api/";
+    const imageUrl = "http://localhost:5000/api/auctionspage/auctions/image";
 
     const fetchData = async () => {
         const result = await axios(url.concat(userId.toString()));
@@ -90,6 +96,23 @@ export default function MyAuctionsPage() {
         return highest;
     }
 
+    function imageSelected(e: any) {
+        if (e.target.files && e.target.files[0]) {
+            let file = e.target.files[0];
+            setCreateImage(file);
+            const reader = new FileReader();
+            reader.onload = x => {
+                if (x && x.target) {
+                    setImage(x.target.result as any);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+        else {
+            setImage(placeholder);
+        }
+    }
+
     function openModal(){
         setShowModal(true);
     }
@@ -101,15 +124,26 @@ export default function MyAuctionsPage() {
         setProductCategory({} as Category);
         setCategoryId(0);
         setModalProductCategory({} as Category);
+        setImageUrl("");
     }
     async function updateAuction() {
-        const result = await axios.put(updateUrl + modalAuction?.id, modalAuction);
-        await fetchData();
-        closeModal();
+        const formData = new FormData();
+        formData.append("imageFile", createImage);
+        const image = await axios.post(imageUrl, formData, {headers: {"Content-Type" : "application/json"}});
+        if (image) {
+            modalAuction.imageUrl = image.data;
+            const result = await axios.put(updateUrl + modalAuction?.id, modalAuction);
+            await fetchData();
+            closeModal();
+        }
     }
 
     const handleClick = (item: AuctionItem) => {
         setModalAuction({...item});
+        const currentImageUrl = item.imageUrl ? "http://localhost:5000/images/" + item.imageUrl : placeholder
+        setImageUrl(currentImageUrl);
+        console.log(currentImageUrl);
+        setImage(currentImageUrl);
         setShowModal(true);
     };
 
@@ -238,6 +272,17 @@ export default function MyAuctionsPage() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form style={{marginTop: "1%"}} inline>
+                        <Row>
+                            <Col xs = {6}>
+                                <img src={auctionImage} alt="edit-image" className="edit-image"/>
+                            </Col>
+                            <Col xs = {6}>
+                                <Form.Group>
+                                    <Form.Label>Upload image</Form.Label>
+                                    <Form.Control type="file" accept="image/*" onChange={imageSelected}></Form.Control>
+                                </Form.Group>
+                            </Col>
+                        </Row>
                         <Form.Group>
                             <Form.Label className="my-1 mr-3">Category</Form.Label>
                             <Form.Control as="select" 

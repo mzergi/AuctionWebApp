@@ -13,6 +13,7 @@ import placeholder from '../assets/placeholder.jpg'
 export default function CreateAuctionPage() {
 
     const createUrl = "http://localhost:5000/api/auctionspage/auctions/create";
+    const imageUrl = "http://localhost:5000/api/auctionspage/auctions/image";
     const baseUrl = "http://localhost:5000/api/";
 
     const [newProductModalIsOpen, setNewProductModalIsOpen] = useState(false);
@@ -30,6 +31,7 @@ export default function CreateAuctionPage() {
     const [newProductName, setNewProductName] = useState("");
     const [newProductCategory, setNewProductCategory] = useState({} as Category);
     const [auctionImage, setImage] = useState(placeholder);
+    const [createImage, setCreateImage] = useState({} as File)
 
     const [loadedProducts, setLoadedProducts] = useState([] as Product[]);
     const [loadedCategories, setLoadedCategories] = useState([] as Category[]);
@@ -64,12 +66,17 @@ export default function CreateAuctionPage() {
             endOfAuction: endOfAuction,
             startingPrice: startingPrice,
             highlighted: highlighted,
-            createdById: loggedInUser.id
+            createdById: loggedInUser.id,
+            imageName: createImage.name
         };
-        var result = await axios.post(createUrl, toCreate, {headers: {"Content-Type" : "application/json"},
-        });
-
-        history.push("/auctions");
+        const formData = new FormData();
+        formData.append("imageFile", createImage);
+        const image = await axios.post(imageUrl, formData, {headers: {"Content-Type" : "application/json"}});
+        if (image) {
+            toCreate.imageName = image.data;
+            const result = await axios.post(createUrl, toCreate, {headers: {"Content-Type" : "application/json"}});
+            history.push("/auctions");
+        }
     }
     async function CreateProduct() {
 
@@ -122,6 +129,7 @@ export default function CreateAuctionPage() {
     function imageSelected(e: any) {
         if (e.target.files && e.target.files[0]) {
             let file = e.target.files[0];
+            setCreateImage(file);
             const reader = new FileReader();
             reader.onload = x => {
                 if (x && x.target) {

@@ -26,6 +26,8 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
 
     const connection = useAppSelector(state => state.connection.connection);
 
+    const imageUrl = item.imageUrl ? "http://localhost:5000/images/" + item.imageUrl : placeholder;
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));
     }
@@ -62,19 +64,14 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
             </Row>
 
             <Row>
-                <Col>
-                    <Carousel>
-                        <div>
-                            <img src={placeholder} />
-                        </div>
-                        <div>
-                            <img src={placeholder} />
-                        </div>
-                    </Carousel>
+                <Col xs = {6}>
+                    <div>
+                        <img src={imageUrl} className = "display-page-image"/>
+                    </div>
                 </Col>
-                <Col>
+                <Col xs = {6}>
                     <Row>
-                        <Col className="detailsBidsWrapper">
+                        <Col xs = {12}>
                             <div className="detailsBidsHeaderWrapper"><div className="detailsBidsHeader">Bid history:</div></div>
                             <div className="detailsBids">
                                 {item.bids.slice(0).reverse().map((bid) => (
@@ -105,12 +102,12 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
                 </Col>
             </Row>
             <Row>
-                <Col className="detailsDescription">
+                <Col className="detailsDescription" xs = {7}>
                     Description: {" "}
                     {item.description}
                 </Col>
 
-                <Col className="d-flex justify-content-center detailsPostBidWrapper">
+                <Col className="d-flex justify-content-center detailsPostBidWrapper" xs = {5}>
                     <Row>
                         <Col className="d-flex" style={{marginTop: "5%"}}>
                             <Form>

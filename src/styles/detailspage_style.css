@@ -126,3 +126,10 @@
     margin-top: 1.45rem;
     margin-left: 1.5rem;
 }
+
+.display-page-image {
+    padding-left: 1rem;
+    width: 90%;
+    height: 90%;
+    border-radius: 5px;
+}

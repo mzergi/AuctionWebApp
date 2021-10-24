@@ -11,7 +11,8 @@ export type AuctionItem = {
     bids: Bid[],
     startingPrice: number,
     highlighted: boolean,
-    createdBy: User
+    createdBy: User,
+    imageUrl?: string
 }
 export type CreateAuctionItem = {
     productId: number,
@@ -20,7 +21,8 @@ export type CreateAuctionItem = {
     endOfAuction: Date,
     startingPrice: number,
     highlighted: boolean,
-    createdById: number
+    createdById: number,
+    imageName: string,
 }
 
 export type User = {

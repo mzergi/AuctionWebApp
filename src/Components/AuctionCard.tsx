@@ -30,6 +30,8 @@ import axios from 'axios';
 import { setConstantValue } from "typescript";
 import * as signalR from "@microsoft/signalr";
 import history from "../App/history";
+import placeholder from '../assets/placeholder.jpg'
+import "../styles/auctionspage_styles.css";
 
 interface AuctionCardsProps {
     item: AuctionItem
@@ -48,6 +50,8 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     const user = useAppSelector(state => state.loginstate.user);
 
     const connection = useAppSelector(state => state.connection.connection);
+
+    const imageUrl = item.imageUrl ? "http://localhost:5000/images/" + item.imageUrl : placeholder;
 
     connection.on("bidReceived", async (bid: Bid) => {
         await fetchData();
@@ -88,12 +92,7 @@ export default function AuctionCard(Props: AuctionCardsProps) {
             <Card className="d-flex justify-content-center" style={{ width: "15rem", minHeight: "25rem"}}>
                 <Card.Body>
                     <Card.Title>{item.product.name}</Card.Title>
-                    Picture
-                    <br />
-                    Goes
-                    <br />
-                    Here
-                    <br />
+                    <img src = {imageUrl} className="card-image"></img>
                 </Card.Body>
                 <Card.Footer>
                     <Link to={"/auctions/".concat(item.id.toString())} onClick={() => {
