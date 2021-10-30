@@ -26,9 +26,40 @@
     transition: 0.25s;
 }
 
+.tableSearchBarWrapper {
+    border-style: solid;
+    border-color: darkgray;
+    border-radius: 12px;
+    margin-left: auto;
+    margin-right: 1rem;
+    width: 12rem;
+    transition: 0.25s;
+}
+
+.tableSearchBarWrapper:focus-within {
+    width: 20rem;
+}
+
 .searchBarWrapper:focus-within {
     width: 20rem;
     transform: translate(-55%, -90%);
+}
+
+.tableSearchBarInput {
+    border-style: none !important;
+    height: 1.5rem;
+    background-color: transparent !important;
+    color: black !important;
+    border-color: darkgray !important;
+    transition: 0.25s;
+}
+.tableSearchBarInput:focus {
+    background-color: transparent !important;
+    border-color: darkgray !important;
+    border-style: none !important;
+    box-shadow: none !important;
+    outline: none;
+    width: 18rem;
 }
 
 .searchBarInput {
