@@ -21,10 +21,18 @@ import "../styles/auctionspage_styles.css";
 import {store} from "../App/store";
 import {setDisplayed} from "../Reducers/AuctionDetailsReducer";
 import {Link} from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 
 export default function MyBidsPage() {
   const [auctions, setAuctions] = useState([] as AuctionItem[]);
+  const [filteredAuctions, setFilteredAuctions] = useState(auctions);
   const [bidInputs, setBidInputs] = useState([] as number[]);
+
+  const [searchQuery, setSearch] = useState("");
+  const [leadingBidsSelected, setLeadingBids] = useState(false);
+  const [withBidsSelected, setWithBids] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
 
   const userId = useAppSelector((state) => state.loginstate.user.id);
 
@@ -34,10 +42,56 @@ export default function MyBidsPage() {
     const result = await axios(url.concat(userId.toString()));
 
     setAuctions([...result.data]);
+    setFilteredAuctions([...result.data]);
     let bids = [...bidInputs];
     auctions.forEach(a => {bids.push(findHighestBidByUser(a))})
     setBidInputs([...bids]);
   };
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      let filtered = [...auctions];
+      if (leadingBidsSelected || withBidsSelected) {
+        if (leadingBidsSelected) {
+          filtered = filtered.filter((a) => a.topBid.bidderID == userId);
+        } else if (withBidsSelected) {
+          filtered = filtered.filter((a) => a.topBid.bidderID != userId);
+        }
+      }
+      if (hasStarted || hasEnded) {
+        if (hasStarted) {
+          filtered = filtered.filter((a) => new Date(a.startOfAuction).getTime() < new Date().getTime());
+        } else if (hasEnded) {
+          filtered = filtered.filter((a) => new Date(a.endOfAuction).getTime() < new Date().getTime());
+        }
+      }
+      setFilteredAuctions([...filtered]);
+    } else {
+      let filtered = auctions.filter(
+        (a) =>
+          a.product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          a.product.category.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          a.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      if (leadingBidsSelected || withBidsSelected) {
+        if (leadingBidsSelected) {
+          filtered = filtered.filter((a) => a.topBid.bidderID == userId);
+        } else if (withBidsSelected) {
+          filtered = filtered.filter((a) => a.topBid.bidderID != userId);
+        }
+      }
+      if (hasStarted || hasEnded) {
+        if (hasStarted) {
+          filtered = filtered.filter((a) => new Date(a.startOfAuction).getTime() < new Date().getTime());
+        } else if (hasEnded) {
+          filtered = filtered.filter((a) => new Date(a.endOfAuction).getTime() < new Date().getTime());
+        }
+      }
+      setFilteredAuctions([...filtered]);
+    }
+  }, [searchQuery, leadingBidsSelected, withBidsSelected, hasStarted, hasEnded]);
 
   const fetchData = async () => {
     const result = await axios(url.concat(userId.toString()));
@@ -88,14 +142,111 @@ export default function MyBidsPage() {
 
   return (
       <Container fluid>
-        <Row className={"justify-content-center mt-4"}>
-          <h2><b>Followed auctions</b></h2>
-        </Row>
+              <Col sm = {12} className="mb-1">
+      <Row className={"form-filter-wrapper"}>
+        <Col sm={2}>
+          <Form>
+            <Form.Group>
+              <Button
+                className="filter-checkbox"
+                style = {{background: hasStarted ? "blue" : "white", color: hasStarted ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (hasEnded && !hasStarted) {
+                    setHasEnded(false);
+                  }
+                  setHasStarted(!hasStarted);
+                }}
+              >
+                Started auctions only
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={2}>
+        <Form>
+            <Form.Group>
+            <Button
+                className="filter-checkbox"
+                style = {{background: hasEnded ? "blue" : "white", color: hasEnded ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (!hasEnded && hasStarted) {
+                    setHasStarted(false);
+                  }
+                  setHasEnded(!hasEnded);
+                }}
+              >
+                Expired auctions only
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={2}>
+        <Form>
+            <Form.Group>
+            <Button
+                className="filter-checkbox"
+                style = {{background: leadingBidsSelected ? "blue" : "white", color: leadingBidsSelected ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (withBidsSelected && !leadingBidsSelected) {
+                    setWithBids(false);
+                  }
+                  setLeadingBids(!leadingBidsSelected);
+                }}
+              >
+                Auctions you are leading
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={2}>
+        <Form>
+            <Form.Group>
+            <Button
+                className="filter-checkbox"
+                style = {{background: withBidsSelected ? "blue" : "white", color: withBidsSelected ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (leadingBidsSelected && !withBidsSelected) {
+                    setLeadingBids(false);
+                  }
+                  setWithBids(!withBidsSelected);
+                }}
+              >
+                Auctions someone else is leading
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={4}>
+          <Form>
+            <Form.Group
+              as={Row}
+              controlId="searchBar"
+              className="tableSearchBarWrapper"
+            >
+              <Col sm={9} className="pr-2 mt-2">
+                <Form.Control
+                  type="text"
+                  placeholder="Filter items..."
+                  className="tableSearchBarInput"
+                  value={searchQuery}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </Col>
+              <Form.Label column sm={1}>
+                <FaSearch
+                  style={{ color: "darkgray", marginBottom: "0.35rem" }}
+                />
+              </Form.Label>
+            </Form.Group>
+          </Form>
+        </Col>
+      </Row>
+      </Col>
         <Row className={"justify-content-center mt-2"}></Row>
         <Table bordered hover>
           <thead>
             <tr>
-              <th colSpan={8}>Your auctions</th>
+              <th colSpan={8}>Followed auctions</th>
             </tr>
             <tr>
               <th>#</th>
@@ -110,7 +261,7 @@ export default function MyBidsPage() {
             </tr>
           </thead>
           <tbody>
-          {auctions.map((a) => (
+          {filteredAuctions.map((a, index) => (
               <tr className={"table-row"}>
                 <td>{auctions.indexOf(a) + 1}</td>
                 <td>{a.product.name}</td>
