@@ -11,6 +11,7 @@ import {
   Card,
   Spinner,
   Table,
+  FormCheck
 } from "react-bootstrap";
 import ItemDisplayPage from "./ItemDisplayPage";
 import {
@@ -58,6 +59,10 @@ export default function MyAuctionsPage() {
   const [auctionImageUrl, setImageUrl] = useState("");
 
   const [searchQuery, setSearch] = useState("");
+  const [noBidsSelected, setNoBids] = useState(false);
+  const [withBidsSelected, setWithBids] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
 
   const userId = useAppSelector((state) => state.loginstate.user.id);
 
@@ -91,14 +96,48 @@ export default function MyAuctionsPage() {
 
   useEffect(() => {
     if (searchQuery === "") {
-        setFilteredAuctions([...auctions]);
+      let filtered = [...auctions];
+      if (noBidsSelected || withBidsSelected) {
+        if (noBidsSelected) {
+          filtered = filtered.filter((a) => a.bids.length == 0);
+        } else if (withBidsSelected) {
+          filtered = filtered.filter((a) => a.bids.length > 0);
+        }
+      }
+      if (hasStarted || hasEnded) {
+        if (hasStarted) {
+          filtered = filtered.filter((a) => new Date(a.startOfAuction).getTime() < new Date().getTime());
+        } else if (hasEnded) {
+          filtered = filtered.filter((a) => new Date(a.endOfAuction).getTime() < new Date().getTime());
+        }
+      }
+      setFilteredAuctions([...filtered]);
+    } else {
+      let filtered = auctions.filter(
+        (a) =>
+          a.product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          a.product.category.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          a.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      if (noBidsSelected || withBidsSelected) {
+        if (noBidsSelected) {
+          filtered = filtered.filter((a) => a.bids.length == 0);
+        } else if (withBidsSelected) {
+          filtered = filtered.filter((a) => a.bids.length > 0);
+        }
+      }
+      if (hasStarted || hasEnded) {
+        if (hasStarted) {
+          filtered = filtered.filter((a) => new Date(a.startOfAuction).getTime() < new Date().getTime());
+        } else if (hasEnded) {
+          filtered = filtered.filter((a) => new Date(a.endOfAuction).getTime() < new Date().getTime());
+        }
+      }
+      setFilteredAuctions([...filtered]);
     }
-    else {
-        setFilteredAuctions(auctions.filter(a => a.product.name.toLowerCase().includes(searchQuery.toLowerCase()) 
-        || a.product.category.name.toLowerCase().includes(searchQuery.toLowerCase()) 
-        || a.description.toLowerCase().includes(searchQuery.toLowerCase())));
-    }
-  }, [searchQuery]);
+  }, [searchQuery, noBidsSelected, withBidsSelected, hasStarted, hasEnded]);
 
   function updateModalAuction(value: any, prop: string) {
     var tmp = modalAuction;
@@ -254,8 +293,80 @@ export default function MyAuctionsPage() {
 
   return (
     <Container fluid>
-      <Row className={"justify-content-center mt-4"}>
-        <Col sm={8}></Col>
+      <Col sm = {12} className="mb-1">
+      <Row className={"form-filter-wrapper"}>
+        <Col sm={2}>
+          <Form>
+            <Form.Group>
+              <Button
+                className="filter-checkbox"
+                style = {{background: hasStarted ? "blue" : "white", color: hasStarted ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (hasEnded && !hasStarted) {
+                    setHasEnded(false);
+                  }
+                  setHasStarted(!hasStarted);
+                }}
+              >
+                Started auctions only
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={2}>
+        <Form>
+            <Form.Group>
+            <Button
+                className="filter-checkbox"
+                style = {{background: hasEnded ? "blue" : "white", color: hasEnded ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (!hasEnded && hasStarted) {
+                    setHasStarted(false);
+                  }
+                  setHasEnded(!hasEnded);
+                }}
+              >
+                Expired auctions only
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={2}>
+        <Form>
+            <Form.Group>
+            <Button
+                className="filter-checkbox"
+                style = {{background: noBidsSelected ? "blue" : "white", color: noBidsSelected ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (withBidsSelected && !noBidsSelected) {
+                    setWithBids(false);
+                  }
+                  setNoBids(!noBidsSelected);
+                }}
+              >
+                Auctions with no bids only
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col sm={2}>
+        <Form>
+            <Form.Group>
+            <Button
+                className="filter-checkbox"
+                style = {{background: withBidsSelected ? "blue" : "white", color: withBidsSelected ? "white" : "black"}}
+                onClick={(e: any) => {
+                  if (noBidsSelected && !withBidsSelected) {
+                    setNoBids(false);
+                  }
+                  setWithBids(!withBidsSelected);
+                }}
+              >
+                Auctions with bids only
+              </Button>
+            </Form.Group>
+          </Form>
+        </Col>
         <Col sm={4}>
           <Form>
             <Form.Group
@@ -281,6 +392,7 @@ export default function MyAuctionsPage() {
           </Form>
         </Col>
       </Row>
+      </Col>
       <Table bordered hover>
         <thead>
           <tr>
