@@ -26,9 +26,40 @@
     transition: 0.25s;
 }
 
+.tableSearchBarWrapper {
+    border-style: solid;
+    border-color: darkgray;
+    border-radius: 12px;
+    margin-left: auto;
+    margin-right: 1rem;
+    width: 12rem;
+    transition: 0.25s;
+}
+
+.tableSearchBarWrapper:focus-within {
+    width: 20rem;
+}
+
 .searchBarWrapper:focus-within {
     width: 20rem;
     transform: translate(-55%, -90%);
+}
+
+.tableSearchBarInput {
+    border-style: none !important;
+    height: 1.5rem;
+    background-color: transparent !important;
+    color: black !important;
+    border-color: darkgray !important;
+    transition: 0.25s;
+}
+.tableSearchBarInput:focus {
+    background-color: transparent !important;
+    border-color: darkgray !important;
+    border-style: none !important;
+    box-shadow: none !important;
+    outline: none;
+    width: 18rem;
 }
 
 .searchBarInput {
@@ -152,5 +183,37 @@
     width: 100%;
     height: 100%;
     border-radius: 2px;
+}
+
+.filter-checkbox {
+    border-style: solid;
+    border-width: 1px;
+    border-color:rgba(112,128,144, 0.8);
+    border-radius: 10px;
+    padding: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: black;
+}
+.filter-checkbox:hover {
+    background-color: rgba(112,128,144, 0.2);
+    transition: 0.2s;
+    color: inherit;
+}
+.filter-checkbox:focus {
+    color: inherit;
+    box-shadow: none;
+    outline: none;
+}
+.filter-checkbox:active {
+    color: inherit;
+    box-shadow: none;
+    outline: none;
+}
+
+
+.form-filter-wrapper {
+    padding: 0.5rem;
+    margin-top: 1rem;
 }
 
