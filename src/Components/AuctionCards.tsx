@@ -40,12 +40,6 @@ interface AuctionCardsProps {
 export default function AuctionCards(Props: AuctionCardsProps){
 
   const url = (Props.highlighted ? "http://localhost:5000/api/auctionspage/auctions/highlighted" : "http://localhost:5000/api/auctionspage/auctions/basic");
-
-  const connection = useAppSelector(state => state.connection.connection);
-
-  const onDetailsClick = () => {
-    
-  }
   
   const [auctions, setAuctions] = useState(Props.items);
 
@@ -53,45 +47,26 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
   const fetchData = async () => {
     if(!queried) {
+      console.log("fetch");
       const result = await axios.get(url);
 
       setAuctions([...result.data]);
     }
   };
 
-  connection.on("bidReceived", async (bid: Bid) => {
-    await fetchData();
-  });
-
-  connection.on("auctionCreated", async () => {
-    await fetchData();
-  });
-
   useEffect(() => {
     (async () => {
-      await fetchData();
+      if (!(auctions.length > 0)){
+        await fetchData();
+      }
     })()
-  }, []);
-
-  let content = useRef(
-    <div>
-      <Spinner
-        animation="border"
-        role="status"
-        className="sidebar-sticky">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
-    </div>
+  });
+  
+  return (
+    <>
+    {auctions.map((item, index) => (
+      <AuctionCard item={item} key={index}/>
+    ))}
+    </>
   )
-
-  if (auctions.length > 0) {
-    content.current = (
-        <>
-        {auctions.map((item, index) => (
-          <AuctionCard item={item} key={index}/>
-        ))}
-        </>
-    )
-  }
-  return content.current;
 }

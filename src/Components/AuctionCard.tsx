@@ -40,17 +40,11 @@ interface AuctionCardsProps {
 export default function AuctionCard(Props: AuctionCardsProps) {
 
     const url = "http://localhost:5000/api/auctionspage/auctions/".concat(Props.item.id.toString());
-
     const [item, setItem] = useState(Props.item);
-
-    const [biddedvalue, setBiddedValue] = useState((item.topBid !== null) ? item.topBid.biddedAmount : item.startingPrice);
-
+    const [biddedvalue, setBiddedValue] = useState((item.topBid !== null) ? item?.topBid?.biddedAmount : item.startingPrice);
     const [highestbidbyuser, setHighestBidByUser] = useState({} as Bid);
-
     const user = useAppSelector(state => state.loginstate.user);
-
     const connection = useAppSelector(state => state.connection.connection);
-
     const imageUrl = item.imageUrl ? "http://localhost:5000/images/" + item.imageUrl : placeholder;
 
     connection.on("bidReceived", async (bid: Bid) => {
@@ -78,10 +72,11 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     }
     useEffect(() => {
         (async () => {
-            await fetchData();
-            await getHighestBidByUser();
+            if (!item) {
+                await fetchData();
+            }
         })();
-    }, []);
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));

@@ -2,16 +2,10 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Col, Container, Button, Form, Modal, Card } from "react-bootstrap";
 import axios from "axios";
-import {User} from "../Model/auction_types";
-import { useAppSelector, useAppDispatch } from '../App/hooks';
 import { store } from '../App/store';
 import { LoginActions } from '../Reducers/UserLoginReducer';
-import { Redirect } from "react-router";
 import history from "../App/history";
-import { mockComponent } from "react-dom/test-utils";
 import moment from "moment";
-
-//bejelentkezés és regisztrálás Katona Tamás szakdolgozata alapján
 
 export default function LoginPage() {
 
@@ -30,7 +24,7 @@ export default function LoginPage() {
   const [regName, setRegName] = React.useState("");
   const [regBirth, setRegBirth] = React.useState(new Date());
 
-  if (window.localStorage.getItem("jwtToken") && loginEmail.length === 0){
+  if (window.localStorage.getItem("jwtToken")){
     history.push("/auctions");
   }
 
@@ -45,23 +39,23 @@ export default function LoginPage() {
 
 
   function registerUser() {
-    setIsOpen(false);
-    var user: any = { Email: regEmail, Password: regPassword, Name: regName, Birth: regBirth};
-    axios.post(url.concat("/register"), user, {headers: {"Content-Type" : "application/json"},
-  })
-  .then((response) => {
-    setRegEmail("");
-    setRegPassword("");
-    setConfirmPassword("");
-    setRegName("");
-    setRegBirth(new Date());
-    openRegisterPopup();
-  })
-  .catch((error) => {
-    const text = !error.response ? "Server error" : error.response.data;
-
-    alert(text);
-  });
+      setIsOpen(false);
+      var user: any = { Email: regEmail, Password: regPassword, Name: regName, Birth: regBirth};
+      axios.post(url.concat("/register"), user, {headers: {"Content-Type" : "application/json"},
+    })
+    .then((response) => {
+      setRegEmail("");
+      setRegPassword("");
+      setConfirmPassword("");
+      setRegName("");
+      setRegBirth(new Date());
+      openRegisterPopup();
+    })
+    .catch((error) => {
+      const text = !error.response ? "Server error" : error.response.data;
+    
+      alert(text);
+    });
   }
 
   function delay(ms: number) {
