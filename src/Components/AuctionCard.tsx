@@ -49,19 +49,23 @@ export default function AuctionCard(Props: AuctionCardsProps) {
 
     connection.on("bidReceived", async (bid: Bid) => {
         await fetchData();
-    });
+    })
 
     const sendBid = async () => {
-        let bid: Bid = { id: 0, biddedAmount: biddedvalue, auctionID: item.id, bidderID: user.id, bidder: {} as User, bidTime: new Date() }
-
+        let bid: Bid = { 
+            id: 0,
+            biddedAmount: biddedvalue,
+            auctionID: item.id,
+            bidderID: user.id,
+            bidder: {} as User,
+            bidTime: new Date() 
+        }
         const result = await axios.patch(url, bid);
-
         setItem({...result.data});
     }
 
     const getHighestBidByUser = async () => {
-        const result = await axios(url.concat("/highestByUser/").concat(user.id.toString()));
-        // endless requests shot here
+        const result = await axios(url.concat("/highestByUser/").concat(user.id.toString()))
 
         setHighestBidByUser({...result.data});
     }
@@ -76,7 +80,7 @@ export default function AuctionCard(Props: AuctionCardsProps) {
                 await fetchData();
             }
         })();
-    });
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBiddedValue(parseInt(e.currentTarget.value));

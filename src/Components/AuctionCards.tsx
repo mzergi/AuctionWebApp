@@ -47,7 +47,6 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
   const fetchData = async () => {
     if(!queried) {
-      console.log("fetch");
       const result = await axios.get(url);
 
       setAuctions([...result.data]);
