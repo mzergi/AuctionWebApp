@@ -47,10 +47,6 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     const connection = useAppSelector(state => state.connection.connection);
     const imageUrl = item.imageUrl ? "http://localhost:5000/images/" + item.imageUrl : placeholder;
 
-    connection.on("bidReceived", async (bid: Bid) => {
-        await fetchData();
-    })
-
     const sendBid = async () => {
         let bid: Bid = { 
             id: 0,
@@ -76,9 +72,10 @@ export default function AuctionCard(Props: AuctionCardsProps) {
     }
     useEffect(() => {
         (async () => {
-            if (!item) {
+            await fetchData();
+            connection.on("bidReceived", async (bid: Bid) => {
                 await fetchData();
-            }
+            })
         })();
     }, []);
 

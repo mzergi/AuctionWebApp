@@ -19,7 +19,6 @@ export const ConnectionSlice = createSlice({
     reducers: {
         start: (state) => {
             state.connection.start();
-            alert('started!');
         }
     }
 })

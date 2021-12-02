@@ -46,13 +46,12 @@ export default function ItemDisplayPage(Props: ItemDisplayPageProps) {
         setItem(result.data)
     };
 
-    connection.on("bidReceived", async (bid: Bid) => {
-        await fetchData();
-    });
-
     useEffect(() => {
         (async () => {
             await fetchData();
+            connection.on("bidReceived", async (bid: Bid) => {
+                await fetchData();
+            });
         })()
     }, []);
     return (

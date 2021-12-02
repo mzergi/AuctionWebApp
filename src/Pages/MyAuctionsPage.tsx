@@ -80,9 +80,6 @@ export default function MyAuctionsPage() {
 
   const connection = useAppSelector((state) => state.connection.connection);
 
-  connection.on("bidReceived", async () => {
-    await fetchData();
-  });
 
   useEffect(() => {
     (async () => {
@@ -91,6 +88,9 @@ export default function MyAuctionsPage() {
       setLoadedProducts(products.data);
       let categories = await axios.get(baseUrl + "auctionspage/categories");
       setLoadedCategories(categories.data);
+      connection.on("bidReceived", async () => {
+        await fetchData();
+      });
     })();
   }, []);
 
@@ -209,7 +209,6 @@ export default function MyAuctionsPage() {
       ? "http://localhost:5000/images/" + item.imageUrl
       : placeholder;
     setImageUrl(currentImageUrl);
-    console.log(currentImageUrl);
     setImage(currentImageUrl);
     setShowModal(true);
   };

@@ -33,12 +33,13 @@ function App() {
 
   const dispatch = useAppDispatch();
 
-  let connection = store.getState().connection.connection;
+  const connection = store.getState().connection.connection;
 
   useEffect(() => {
     (async () => {
       if(connection.state === HubConnectionState.Disconnected)
       await connection.start();
+      console.log("started");
     })()
   }, []);
 

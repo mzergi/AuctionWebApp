@@ -100,13 +100,13 @@ export default function MyBidsPage() {
 
   const connection = useAppSelector((state) => state.connection.connection);
 
-  connection.on("bidReceived", async () => {
-    await fetchData();
-  });
 
   useEffect(() => {
     (async () => {
       await fetchDataInit();
+      connection.on("bidReceived", async () => {
+        await fetchData();
+      });
     })()
   }, []);
 

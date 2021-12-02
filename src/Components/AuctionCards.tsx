@@ -59,7 +59,7 @@ export default function AuctionCards(Props: AuctionCardsProps){
         await fetchData();
       }
     })()
-  });
+  }, []);
   
   return (
     <>
