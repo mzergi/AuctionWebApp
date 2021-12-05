@@ -26,59 +26,54 @@ export default function QueriedAuctionsPage(Props: QueriedAuctionsPageProps) {
 
     const [items, setAuctions] = useState(Props.items);
 
+    const [empty, setEmpty] = useState(true);
+
+    const [queried, setQueried] = useState(false);
+
     const url = "http://localhost:5000/api/auctionspage/auctions/category/"
 
     async function fetchData(){
         //category or search query magic
         if(items.length === 0 && categoryID !== 0){
             const result = await axios.get(url.concat(categoryID.toString()));
-            setAuctions(result.data);
-            if(!result.data.length)
-            {
-                content.current = (
-                    <Container>
-                        <h2>
-                            No auctions found!
-                        </h2>
-                    </Container>
-                )
+            setQueried(true);
+            if (!result.data.length) {
+                return false;
             }
+            setAuctions(result.data);
+            return true;
         }
     };
 
     useEffect(() => {
         (async () => {
-            await fetchData();
-
-            if(!items.length)
-            {
-                content.current = (
-                    <Container>
-                        <h2>
-                            No auctions found!
-                        </h2>
-                    </Container>
-                )
-            }
+            const hasData = await fetchData();
+            setEmpty(!!hasData);
         })()
     }, []);
 
-    let content = useRef(
-        <div style = {{display: "flex", justifyContent: "center", alignItems: "center"}}>
-            <Spinner
-            animation="border"
-            role="status"
-            className="sidebar-sticky">
-                <span className="sr-only">Loading...</span>
-            </Spinner>
-        </div>
-    )
-
-    if(!items.length)
-    {
-        return content.current;
+    if (!items.length && !queried) {
+        return (
+            <div style = {{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                <Spinner
+                animation="border"
+                role="status"
+                className="sidebar-sticky">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>
+            </div>
+        )
     }
 
+    else if (!empty && queried) {
+        return (
+            <Container>
+                <h2>
+                    No auctions found!
+                </h2>
+            </Container>
+        )
+    }
     else {
         return (
             <Container fluid>
