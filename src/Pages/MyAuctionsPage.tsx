@@ -186,20 +186,22 @@ export default function MyAuctionsPage() {
     setImageUrl("");
   }
   async function updateAuction() {
-    const formData = new FormData();
-    formData.append("imageFile", createImage);
-    const image = await axios.post(imageUrl, formData, {
-      headers: { "Content-Type": "application/json" },
-    });
-    if (image) {
-      modalAuction.imageUrl = image.data;
-      const result = await axios.put(
-        updateUrl + modalAuction?.id,
-        modalAuction
-      );
-      await fetchData();
-      closeModal();
+    if (Object.keys(createImage).length === 0 && createImage.constructor === File) {
+      const formData = new FormData();
+      formData.append("imageFile", createImage);
+      const image = await axios.post(imageUrl, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (image) {
+        modalAuction.imageUrl = image.data;
+      }
     }
+    const result = await axios.put(
+      updateUrl + modalAuction?.id,
+      modalAuction
+    );
+    await fetchData();
+    closeModal();
   }
 
   const handleClick = (item: AuctionItem) => {
