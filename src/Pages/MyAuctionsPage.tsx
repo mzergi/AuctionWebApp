@@ -75,7 +75,6 @@ export default function MyAuctionsPage() {
     const result = await axios(url.concat(userId.toString()));
 
     setAuctions([...result.data]);
-    setFilteredAuctions([...result.data]);
   };
 
   const connection = useAppSelector((state) => state.connection.connection);
@@ -137,7 +136,7 @@ export default function MyAuctionsPage() {
       }
       setFilteredAuctions([...filtered]);
     }
-  }, [searchQuery, noBidsSelected, withBidsSelected, hasStarted, hasEnded]);
+  }, [searchQuery, noBidsSelected, withBidsSelected, hasStarted, hasEnded, auctions]);
 
   function updateModalAuction(value: any, prop: string) {
     var tmp = modalAuction;

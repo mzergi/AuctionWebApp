@@ -91,7 +91,7 @@ export default function MyBidsPage() {
       }
       setFilteredAuctions([...filtered]);
     }
-  }, [searchQuery, leadingBidsSelected, withBidsSelected, hasStarted, hasEnded]);
+  }, [searchQuery, leadingBidsSelected, withBidsSelected, hasStarted, hasEnded, auctions]);
 
   const fetchData = async () => {
     const result = await axios(url.concat(userId.toString()));
