@@ -75,24 +75,35 @@ export default function QueriedAuctionsPage(Props: QueriedAuctionsPageProps) {
         )
     }
     else {
-        return (
-            <Container fluid>
-                <Row>
-                    <Col xs={2} id="sidebar-wrapper">
-                        <Sidebar/>
-                    </Col>
-                    <Col>
-                        <Row className="mt-4">
-                            <Col className="d-flex justify-content-start">
-                                <h5>Auctions found:</h5>
-                            </Col>
-                        </Row>
-                        <Row className={"g-6 d-flex"} style = {{justifyContent: "flex-start"}}>
-                                <AuctionCards highlighted={false} items={items}/>
-                        </Row>
-                    </Col>
-                </Row>
-            </Container>
-        )
+        if (items.length === 0) {
+            return (
+                <Container>
+                    <h2>
+                        No auctions found!
+                    </h2>
+                </Container>
+            )
+        }
+        else {
+            return (
+                <Container fluid>
+                    <Row>
+                        <Col xs={2} id="sidebar-wrapper">
+                            <Sidebar/>
+                        </Col>
+                        <Col>
+                            <Row className="mt-4">
+                                <Col className="d-flex justify-content-start">
+                                    <h5>Auctions found:</h5>
+                                </Col>
+                            </Row>
+                            <Row className={"g-6 d-flex"} style = {{justifyContent: "flex-start"}}>
+                                    <AuctionCards highlighted={false} items={items}/>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
+            )
+        }
     }
 }
