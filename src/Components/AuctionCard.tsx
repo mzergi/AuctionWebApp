@@ -57,7 +57,9 @@ export default function AuctionCard(Props: AuctionCardsProps) {
             bidTime: new Date() 
         }
         const result = await axios.patch(url, bid);
-        setItem({...result.data});
+        if (result.data) {
+            setItem({...result.data});
+        }
     }
 
     const getHighestBidByUser = async () => {

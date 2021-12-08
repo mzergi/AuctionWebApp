@@ -69,14 +69,16 @@ export default function CreateAuctionPage() {
             createdById: loggedInUser.id,
             imageName: createImage.name
         };
-        const formData = new FormData();
-        formData.append("imageFile", createImage);
-        const image = await axios.post(imageUrl, formData, {headers: {"Content-Type" : "application/json"}});
-        if (image) {
-            toCreate.imageName = image.data;
-            const result = await axios.post(createUrl, toCreate, {headers: {"Content-Type" : "application/json"}});
-            history.push("/auctions");
+        if (Object.keys(createImage).length === 0 && createImage.constructor === File) {
+            const formData = new FormData();
+            formData.append("imageFile", createImage);
+            const image = await axios.post(imageUrl, formData, {headers: {"Content-Type" : "application/json"}});
+            if (image) {
+                toCreate.imageName = image.data;
+            }
         }
+        const result = await axios.post(createUrl, toCreate, {headers: {"Content-Type" : "application/json"}});
+        history.push("/auctions");
     }
     async function CreateProduct() {
 

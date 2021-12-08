@@ -95,6 +95,7 @@ export default function MyBidsPage() {
 
   const fetchData = async () => {
     const result = await axios(url.concat(userId.toString()));
+    setAuctions([]);
     setAuctions([...result.data]);
   }
 
@@ -107,6 +108,15 @@ export default function MyBidsPage() {
       connection.on("bidReceived", async () => {
         await fetchData();
       });
+      connection.on("auctionCreated", async (auction: AuctionItem) => {
+        await fetchData();
+      })
+      connection.on("auctionDeleted", async () => {
+        await fetchData();
+      })
+      connection.on("auctionUpdated", async () => {
+        await fetchData();
+      })
     })()
   }, []);
 

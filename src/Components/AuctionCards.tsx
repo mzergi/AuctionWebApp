@@ -45,10 +45,12 @@ export default function AuctionCards(Props: AuctionCardsProps){
 
   const [queried, setQueried] = useState(Props.items.length ? true : false);
 
+  const connection = useAppSelector(state => state.connection.connection);
+
   const fetchData = async () => {
     if(!queried) {
       const result = await axios.get(url);
-
+      setAuctions([]);
       setAuctions([...result.data]);
     }
   };
@@ -58,6 +60,15 @@ export default function AuctionCards(Props: AuctionCardsProps){
       if (!(auctions.length > 0)){
         await fetchData();
       }
+      connection.on("auctionCreated", async (auction: AuctionItem) => {
+        await fetchData();
+      })
+      connection.on("auctionDeleted", async () => {
+        await fetchData();
+      })
+      connection.on("auctionUpdated", async () => {
+        await fetchData();
+      })
     })()
   }, []);
   
